@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Globe, AtSign, Send, CirclePlay, Briefcase, MessageCircle, Mail, ArrowRight } from "lucide-react";
+import { whatsappUrl } from "../lib/contact";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -115,9 +116,9 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <a
-                  href="https://wa.me/PLACEHOLDER"
+                  href={whatsappUrl()}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener noreferrer nofollow"
                   className="flex items-center gap-2 text-muted text-sm hover:text-ink transition-colors"
                 >
                   <MessageCircle size={15} /> WhatsApp us

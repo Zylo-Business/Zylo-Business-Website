@@ -206,7 +206,7 @@
         <span>ZYLO TECH<small>SOLUTIONS</small></span>
       </div>
       <div class="nav-cta">
-        <span class="phone" id="navPhone">Register: 0543907751</span>
+        <a class="phone" id="navPhone" href="#" target="_blank" rel="noopener nofollow" style="text-decoration:none;">Register</a>
         <a href="#register" class="btn btn-gold sm">Reserve my seat</a>
       </div>
     </div>
@@ -320,7 +320,7 @@
             <label for="email">Email address</label>
             <input id="email" name="email" type="email" placeholder="you@email.com" autocomplete="email" required />
             <label for="phone">Phone (Mobile Money)</label>
-            <input id="phone" name="phone" type="tel" placeholder="0543907751" autocomplete="tel" required />
+            <input id="phone" name="phone" type="tel" placeholder="Your Mobile Money number" autocomplete="tel" required />
             <div class="err" id="err"></div>
             <button class="btn btn-gold block" id="submitBtn" type="submit" style="margin-top:8px;">
               <span id="submitLabel">Pay GHS 200 &amp; reserve seat</span>
@@ -349,7 +349,7 @@
         <details><summary>What payment methods can I use?</summary><p>Mobile Money (MTN MoMo, Telecel Cash, AirtelTigo) and Visa/Mastercard, all through Paystack's secure checkout.</p></details>
         <details><summary>Do I need trading or investing experience?</summary><p>No. The master class is open to all — we start with the fundamentals and build up to practical technique.</p></details>
         <details><summary>Will there be a recording?</summary><p>Registered attendees will be notified by email if a replay is made available.</p></details>
-        <details><summary>Who is running this?</summary><p>Zylo Tech Solutions — a digital-products company registered in Ghana. Questions? WhatsApp us on <span id="faqPhone">0543907751</span>.</p></details>
+        <details><summary>Who is running this?</summary><p>Zylo Tech Solutions — a digital-products company registered in Ghana. Questions? WhatsApp us on <a id="faqPhone" href="#" target="_blank" rel="noopener nofollow">our business line</a>.</p></details>
       </div>
     </div>
   </section>
@@ -357,7 +357,7 @@
   <footer>
     <div class="wrap">
       <div class="brand"><span class="z">Z</span><span>ZYLO TECH<small>SOLUTIONS</small></span></div>
-      <p>© <span id="year"></span> Zylo Tech Solutions · Registered in Ghana · Register: <span id="footPhone">0543907751</span></p>
+      <p>© <span id="year"></span> Zylo Tech Solutions · Registered in Ghana · Register: <a id="footPhone" href="#" target="_blank" rel="noopener nofollow" style="color:inherit;">our line</a></p>
     </div>
   </footer>
 
@@ -366,6 +366,16 @@
     let CFG = null;
 
     function fmtPrice(c) { return `${c.currency} ${c.priceGhs}`; }
+
+    // Reverse the server's obfuscated token back into the phone number, in-browser only.
+    function deobPhone(enc) {
+      try { return atob(enc).split('').reverse().join(''); } catch { return ''; }
+    }
+    function setPhone(el, text, href) {
+      if (!el) return;
+      el.textContent = text;
+      if (el.tagName === 'A') { el.href = href; }
+    }
 
     async function loadConfig() {
       try {
@@ -378,9 +388,16 @@
       $('mDate').textContent = CFG.dateLabel;
       $('mTime').textContent = CFG.timeLabel;
       $('mLoc').textContent = CFG.location;
-      $('navPhone').textContent = 'Register: ' + CFG.phone;
-      $('faqPhone').textContent = CFG.phone;
-      $('footPhone').textContent = CFG.phone;
+      // Assemble the contact number in the browser from the encoded token so it never
+      // appears as plain text in the page source or API response (anti-scraping).
+      const local = deobPhone(CFG.phoneEnc);
+      if (local) {
+        const display = local.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+        const wa = 'https://wa.me/233' + local.slice(1);
+        setPhone($('navPhone'), 'Register: ' + display, wa);
+        setPhone($('faqPhone'), display, wa);
+        setPhone($('footPhone'), display, wa);
+      }
       $('submitLabel').textContent = CFG.paymentsEnabled ? `Pay ${price} & reserve seat` : 'Reserve my free seat';
       startCountdown(CFG.dateISO);
     }

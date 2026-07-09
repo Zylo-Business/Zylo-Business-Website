@@ -22,7 +22,9 @@ export const config = {
     timeLabel: process.env.WEBINAR_TIME_LABEL || "7:00 PM GMT daily",
     location: process.env.WEBINAR_LOCATION || "Online via Zoom",
     zoomLink: process.env.WEBINAR_ZOOM_LINK || "https://zoom.us/j/PLACEHOLDER",
-    phone: process.env.REGISTER_PHONE || "0543907751",
+    // Raw number is used ONLY server-side (e.g. the confirmation email). It is never
+    // sent to the browser as plain text — see publicConfig() which emits an encoded token.
+    phone: process.env.REGISTER_PHONE || "0000000000",
   },
 
   // Pricing
@@ -48,6 +50,13 @@ export const config = {
   fakePayments: String(process.env.DEV_FAKE_PAYMENTS).toLowerCase() === "true",
 };
 
+// Obfuscate the phone so it is not present as a plain string in API responses or the
+// page source. The browser reverses this at runtime. Defeats automated scrapers/harvesters
+// that grep static HTML/JSON for phone patterns (they never execute this decode step).
+function encodePhone(n) {
+  return Buffer.from(String(n).split("").reverse().join(""), "utf8").toString("base64");
+}
+
 // A safe subset that is OK to expose to the browser.
 export function publicConfig() {
   return {
@@ -56,7 +65,7 @@ export function publicConfig() {
     dateLabel: config.webinar.dateLabel,
     timeLabel: config.webinar.timeLabel,
     location: config.webinar.location,
-    phone: config.webinar.phone,
+    phoneEnc: encodePhone(config.webinar.phone),
     priceGhs: config.priceGhs,
     currency: config.currency,
     paymentsEnabled: config.paymentsEnabled,

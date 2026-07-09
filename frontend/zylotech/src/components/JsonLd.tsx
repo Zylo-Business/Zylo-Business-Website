@@ -36,9 +36,10 @@ export const organizationSchema = {
     availableLanguage: ["English"],
     email: "hello@zylotech.com",
   },
+  // NOTE: the business phone number is intentionally NOT included in structured data
+  // (contactPoint.telephone / sameAs) so search crawlers and scrapers can't harvest it.
   sameAs: [
     "https://t.me/PLACEHOLDER",
-    "https://wa.me/PLACEHOLDER",
   ],
   founder: [
     {

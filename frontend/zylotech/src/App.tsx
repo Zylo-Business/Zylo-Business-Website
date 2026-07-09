@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, Link } from "react-router-do
 import { HelmetProvider } from "react-helmet-async";
 import { MessageCircle } from "lucide-react";
 
+import { whatsappUrl } from "./lib/contact";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -58,9 +59,9 @@ function AppContent() {
 
       {/* WhatsApp Floating Button */}
       <a
-        href="https://wa.me/PLACEHOLDER"
+        href={whatsappUrl()}
         target="_blank"
-        rel="noopener noreferrer"
+        rel="noopener noreferrer nofollow"
         aria-label="Chat on WhatsApp"
         className="fixed bottom-6 right-6 z-50 bg-teal text-white rounded-full w-14 h-14 flex items-center justify-center shadow-glow hover:bg-teal-dark hover:scale-105 transition-all duration-200"
       >

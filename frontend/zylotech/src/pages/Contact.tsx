@@ -6,6 +6,7 @@ import SEOMeta from "../components/SEOMeta";
 import JsonLd, { breadcrumbSchema, faqSchema } from "../components/JsonLd";
 import SectionHeader from "../components/SectionHeader";
 import { EMAILJS_CONFIG } from "../config/emailjs";
+import { whatsappUrl, phoneDisplay } from "../lib/contact";
 
 interface FormData {
   from_name: string;
@@ -98,17 +99,17 @@ export default function Contact() {
             <ul className="space-y-5 mb-8">
               <li>
                 <a
-                  href="https://wa.me/PLACEHOLDER"
+                  href={whatsappUrl()}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener noreferrer nofollow"
                   className="flex items-center gap-3 text-gray-700 hover:text-teal transition-colors"
                 >
                   <div className="w-10 h-10 bg-teal-light rounded-full flex items-center justify-center shrink-0">
                     <MessageCircle size={18} className="text-teal" />
                   </div>
                   <div>
-                    <p className="font-semibold text-sm">WhatsApp</p>
-                    <p className="text-gray-400 text-xs">Chat with us directly</p>
+                    <p className="font-semibold text-sm">WhatsApp / Call</p>
+                    <p className="text-gray-400 text-xs">{phoneDisplay()}</p>
                   </div>
                 </a>
               </li>
