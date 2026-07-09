@@ -7,6 +7,15 @@ import { config, publicConfig } from "./src/config.js";
 import * as store from "./src/store.js";
 import { verifyTransaction } from "./src/paystack.js";
 import { sendThankYou } from "./src/email.js";
+import { createRegistration, updateRegistration, airtableEnabled } from "./src/airtable.js";
+
+// Send the confirmation email only if the backend owns email delivery. When the
+// Airtable → Zapier → Mailchimp/Resend pipeline handles it, set BACKEND_SENDS_EMAIL=false
+// so registrants don't receive two emails.
+async function maybeSendEmail(reg) {
+  if (!config.backendSendsEmail) return { sent: false, reason: "handled_by_pipeline" };
+  return sendThankYou(reg);
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -49,9 +58,13 @@ app.post("/api/register", async (req, res) => {
   };
   await store.addRegistration(reg);
 
+  // Push the lead into Airtable (the CRM that Zapier watches). Non-fatal on failure.
+  const at = await createRegistration(reg);
+  if (at.id) await store.updateByReference(reference, { airtableId: at.id });
+
   // Free / lead-gen mode: no payment, confirm immediately and send the email.
   if (!config.paymentsEnabled) {
-    const email = await sendThankYou(reg);
+    const email = await maybeSendEmail(reg);
     await store.updateByReference(reference, { emailSent: email.sent });
     return res.json({ reference, paymentsEnabled: false, confirmed: true, emailSent: email.sent });
   }
@@ -93,7 +106,11 @@ app.post("/api/pay/verify", async (req, res) => {
   });
 
   const updated = await store.findByReference(reference);
-  const email = await sendThankYou(updated);
+
+  // Update the Airtable record to Paid so Zapier can fire its "payment confirmed" flow.
+  if (updated.airtableId) await updateRegistration(updated.airtableId, updated);
+
+  const email = await maybeSendEmail(updated);
   await store.updateByReference(reference, { emailSent: email.sent, emailError: email.reason || null });
 
   return res.json({ confirmed: true, emailSent: email.sent });
@@ -129,5 +146,7 @@ app.listen(config.port, () => {
   console.log(`  Price: ${config.paymentsEnabled ? config.currency + " " + config.priceGhs : "FREE (lead-gen mode)"}`);
   console.log(`  Paystack: ${config.paystackSecretKey ? "configured" : "NOT configured"}${config.fakePayments ? " (DEV_FAKE_PAYMENTS on)" : ""}`);
   console.log(`  Resend: ${config.resendApiKey ? "configured" : "NOT configured (emails will be logged)"}`);
+  console.log(`  Airtable: ${airtableEnabled ? `configured → table "${config.airtable.table}"` : "NOT configured (skipped)"}`);
+  console.log(`  Email delivery: ${config.backendSendsEmail ? "backend (Resend)" : "pipeline (Airtable → Zapier → Mailchimp/Resend)"}`);
   console.log(`  Admin leads: ${config.publicBaseUrl}/admin/registrations?token=YOUR_ADMIN_TOKEN\n`);
 });

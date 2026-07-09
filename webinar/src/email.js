@@ -46,6 +46,9 @@ function buildHtml(reg) {
 </html>`;
 }
 
+// Exported for previewing/testing the template without sending a real email.
+export { buildHtml as buildThankYouHtml };
+
 function escape(s = "") {
   return String(s).replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])

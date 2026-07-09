@@ -58,6 +58,69 @@ Every registration is stored in `data/registrations.json`. View or export them:
 - **JSON:** `http://localhost:4000/admin/registrations?token=YOUR_ADMIN_TOKEN`
 - **CSV (for Excel/Sheets):** `http://localhost:4000/admin/registrations.csv?token=YOUR_ADMIN_TOKEN`
 
+## Data & automation pipeline
+
+```
+Checkout / Registration  →  Airtable  →  Zapier  →  Mailchimp / Resend
+   (this backend)          (CRM /        (no-code     (audience + emails)
+                            source of     automation)
+                            record)
+```
+
+The backend writes every registration to **Airtable**; **Zapier** watches that table and
+drives **Mailchimp** (audience/tags) and/or **Resend** (emails). The local
+`data/registrations.json` is kept as a backup.
+
+### 1. Airtable — create the table
+
+Create a base with a table named **`Registrations`** (or set `AIRTABLE_TABLE_NAME`) with
+these fields — names must match exactly:
+
+| Field | Type |
+|---|---|
+| `Name` | Single line text |
+| `Email` | Email |
+| `Phone` | Phone number |
+| `Status` | Single select (`Registered`, `Paid`) |
+| `Price (GHS)` | Number |
+| `Reference` | Single line text |
+| `Registered At` | Date (include time) |
+| `Paid At` | Date (include time) |
+| `Channel` | Single line text |
+| `Source` | Single line text |
+
+Create a Personal Access Token at <https://airtable.com/create/tokens> with scopes
+`data.records:write` (and `data.records:read`) on this base, then set `AIRTABLE_API_KEY`,
+`AIRTABLE_BASE_ID` (starts `app…`), and `AIRTABLE_TABLE_NAME` in `.env`.
+
+The backend **creates** a row on registration and **updates** it to `Status = Paid`
+(with `Paid At` / `Channel`) after payment is verified — so you can trigger different
+Zaps for new leads vs. confirmed buyers.
+
+### 2. Zapier — from Airtable to Mailchimp / Resend
+
+Build one or both Zaps in your Zapier account:
+
+**Mailchimp (audience + welcome automation)**
+1. **Trigger:** Airtable → *New or Updated Record* on the `Registrations` table.
+2. *(optional)* **Filter:** only continue if `Status` is `Paid` (or `Registered` for a lead nurture).
+3. **Action:** Mailchimp → *Add/Update Subscriber* — map `Email`, `Name`; add a tag like
+   `master-class-2026`. A Mailchimp automation can then send the welcome/reminder series.
+
+**Resend (transactional confirmation email)**
+1. **Trigger:** Airtable → *New or Updated Record*, **Filter** `Status = Paid`.
+2. **Action:** Resend → *Send Email* (or Webhooks → POST to the Resend API), mapping
+   `Email`, `Name`, and `Reference` into your template.
+
+### 3. Avoid duplicate emails
+
+Once a Zap sends the confirmation email, set **`BACKEND_SENDS_EMAIL=false`** in `.env` so
+the backend stops sending its own Resend email. Leave it `true` if you'd rather the backend
+keep sending directly and use Zapier only for Mailchimp list-building.
+
+> Airtable is optional: if `AIRTABLE_API_KEY`/`AIRTABLE_BASE_ID` are unset, the backend
+> just skips it and keeps working with the local store + direct Resend email.
+
 ## Testing without live keys
 
 Set `DEV_FAKE_PAYMENTS=true` in `.env` to simulate a successful payment without
