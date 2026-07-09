@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #0B1220;
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tighter, modern display headings */
+.font-heading {
+  letter-spacing: -0.02em;
+}
+
+/* Subtle grid/dot backdrop for hero */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(15, 110, 86, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 110, 86, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Soft radial glow used behind the hero */
+.hero-glow {
+  background: radial-gradient(60% 55% at 50% 0%, rgba(15, 110, 86, 0.10) 0%, transparent 70%);
+}
+
+/* Marquee for the trust strip */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F4F3EF;
+}
+::-webkit-scrollbar-thumb {
+  background: #0F6E56;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #085041;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Env / secrets — never commit real keys
+.env
+.env.*
+!.env.example
+**/.env
+!**/.env.example
+
+# Build output
+dist/
+build/
+**/dist/
+
+# Runtime data (webinar leads live here locally)
+webinar/data/
+
+# Logs & temp
+*.log
+npm-debug.log*
+dev-*.txt
+ngrok-*.txt
+server-live.txt
+*.tmp
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

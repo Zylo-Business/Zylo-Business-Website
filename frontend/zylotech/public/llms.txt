@@ -1,0 +1,74 @@
+# Zylo Tech Solutions — llms.txt
+# https://llmstxt.org — machine-readable site summary for AI agents and LLMs
+
+> Zylo Tech Solutions is a digital products company registered in Ghana, West Africa.
+> We sell practical tools, courses, and guides for pastors, cryptocurrency traders,
+> self-taught programmers, and lottery enthusiasts across Ghana and West Africa.
+> All products are priced in GHS (Ghana cedis) and delivered instantly via Selar.co.
+> Payment is processed by Paystack supporting Ghana mobile money and cards.
+
+## Company
+
+- **Name:** Zylo Tech Solutions
+- **Location:** Accra, Ghana
+- **Founded:** 2024
+- **Registration:** Ghana registered business
+- **Website:** https://zylotech.com
+- **Contact:** hello@zylotech.com
+
+## Team
+
+- **Anthony Enchia** — Computer Programmer, Cryptocurrency Trader, Lottery Forecaster
+- **Emmanuel Obeng** — Social Media Manager, Cryptocurrency Trader, Lottery Forecaster
+
+## Products (12 digital products)
+
+### Ministry & Church
+- The Pastor's Admin Vault — GHS 200 — 20 church administration templates
+- Preach That Moves — GHS 250 — 7-step sermon construction guide
+- The Discipleship Pipeline — GHS 350 — Complete church discipleship system
+- The Caring Pastor — GHS 300 — Biblical counselling course for ministry leaders
+- Closer: 30-Day Prayer Journal — GHS 150 — Grace-based daily devotional PDF
+
+### Cryptocurrency & Trading
+- Ghana Crypto Starter Blueprint — GHS 200 — Bitcoin buying guide using mobile money
+- The Drawdown Shield — GHS 300 — Risk management Google Sheets system
+- Passive Crypto Income Playbook — GHS 350 — Staking and DeFi guide for West Africa
+
+### Programming & Tech
+- The Zylo Trading Script Pack — GHS 500 — 10 Python scripts for crypto traders
+- Python for Traders — GHS 600 — 5-session video course, build a Telegram alert bot
+
+### Lottery & Forecasting
+- LottoScan Pro Spreadsheet — GHS 180 — Frequency analysis tool for any lottery
+- The Lottery Analyst — GHS 150 — Data-driven number selection methodology guide
+
+## Blog Topics
+
+- Cryptocurrency trading from Ghana (mobile money on-ramps, P2P safety, passive income)
+- Ministry and church leadership (admin systems, discipleship, pastoral care)
+- Python programming for traders (automation, bots, scripts)
+- Lottery analysis (frequency tables, wheeling systems, honest probability framing)
+
+## Pages
+
+- [Home](https://zylotech.com/) — Hero, product highlights, testimonials, CTA
+- [Products](https://zylotech.com/products) — Full product catalogue with buy buttons
+- [About](https://zylotech.com/about) — Team story and expertise pillars
+- [Blog](https://zylotech.com/blog) — Free educational articles
+- [Contact](https://zylotech.com/contact) — Form, WhatsApp, Calendly booking
+
+## Audience
+
+- Pastors and church leaders in Ghana and West Africa
+- Cryptocurrency traders using Ghana mobile money
+- Self-taught developers and CS students in Ghana
+- Lottery enthusiasts seeking data-driven analysis
+
+## Technical
+
+- Built with React 18 + Vite + Tailwind CSS
+- Hosted on Vercel
+- Payments via Paystack on Selar.co
+- No login or user accounts required
+- All content in English (en-GH locale)

@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wealth &amp; Opportunity Master Class 2026 — Zylo Tech Solutions</title>
+  <meta name="description" content="Join the Zylo Tech Wealth & Opportunity Master Class 2026. Learn investing, lotto forecasting & analytics, and trading (forex & crypto) with risk management. Online via Zoom." />
+  <meta property="og:title" content="Wealth & Opportunity Master Class 2026" />
+  <meta property="og:description" content="Personal growth & investment, lotto forecasting & analytics, and trading technicalities — one live online master class." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <style>
+    :root {
+      --navy-900: #F0EEE6;
+      --navy-800: #EAE7DB;
+      --navy-700: #FAF9F5;
+      --navy-600: #E6E2D4;
+      --line: #DDD8C8;
+      --gold: #CC785C;
+      --gold-2: #D8917A;
+      --teal: #B0664A;
+      --blue: #7C6A57;
+      --ink: #191915;
+      --muted: #6E675A;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--navy-900);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .display { font-family: 'Fraunces', Georgia, 'Times New Roman', serif; letter-spacing: -0.01em; font-weight: 600; }
+    a { color: inherit; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+    .gold { color: var(--gold); }
+
+    /* Backdrops */
+    .bg-fx {
+      position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(60% 45% at 82% 4%, rgba(204,120,92,0.10), transparent 62%),
+        linear-gradient(180deg, #F0EEE6 0%, #EAE7DB 100%);
+    }
+    .bg-fx::after {
+      content: ""; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(120,90,70,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120,90,70,0.035) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: radial-gradient(80% 55% at 50% 0%, black, transparent 70%);
+    }
+
+    /* Nav */
+    nav.top {
+      position: sticky; top: 0; z-index: 40;
+      backdrop-filter: blur(12px);
+      background: rgba(247,240,228,0.82);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-in { display: flex; align-items: center; justify-content: space-between; height: 62px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: 1px; }
+    .brand .z {
+      display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px;
+      background: var(--gold); color: #fff; font-weight: 900;
+      box-shadow: 0 1px 2px rgba(25,25,21,0.12);
+    }
+    .brand small { display: block; font-size: 9px; letter-spacing: 3px; color: var(--muted); font-weight: 600; }
+    .nav-cta { display: flex; align-items: center; gap: 14px; }
+    .phone { color: var(--muted); font-size: 14px; font-weight: 600; }
+    @media (max-width: 640px){ .phone { display: none; } }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+      font-weight: 600; font-family: 'Inter'; border: 0; border-radius: 10px;
+      padding: 12px 22px; font-size: 15px; text-decoration: none; transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .btn-gold { background: var(--gold); color: #fff; box-shadow: 0 1px 2px rgba(25,25,21,0.08); }
+    .btn-gold:hover { background: #B7654B; transform: translateY(-1px); }
+    .btn-ghost { background: transparent; color: var(--ink); border: 1px solid #C9C3B2; }
+    .btn-ghost:hover { background: rgba(25,25,21,0.04); }
+    .btn.sm { padding: 9px 16px; font-size: 14px; }
+    .btn.block { width: 100%; justify-content: center; padding: 16px; font-size: 16px; }
+
+    /* Hero */
+    .hero { padding: 64px 0 40px; text-align: center; }
+    .kicker { letter-spacing: 5px; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 18px; }
+    .hero h1 { font-size: clamp(42px, 8vw, 82px); line-height: 1.02; font-weight: 600; margin: 0; letter-spacing: -0.02em; }
+    .hero h1 .l2 { color: var(--gold); font-style: italic; }
+    .mc-badge {
+      display: inline-flex; align-items: center; gap: 10px; margin: 22px 0 6px;
+      font-family: 'Inter', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+    }
+    .mc-badge { font-weight: 600; letter-spacing: 1px; }
+    .mc-badge .a { background: var(--gold); color:#fff; padding: 8px 16px; border-radius: 8px; font-size: clamp(18px,3vw,24px); }
+    .mc-badge .b { background: var(--ink); color:#F0EEE6; padding: 8px 16px; border-radius: 8px; font-size: clamp(18px,3vw,24px); }
+    .hero p.sub { max-width: 640px; margin: 22px auto 26px; color: var(--muted); font-size: 18px; line-height: 1.6; }
+
+    .meta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 30px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 12px;
+      background: rgba(255,255,255,0.6); border: 1px solid var(--line); font-weight: 600; font-size: 14px;
+    }
+    .chip b { color: var(--ink); }
+    .chip .ic { font-size: 16px; }
+
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .price-tag { margin-top: 18px; color: var(--muted); font-size: 14px; }
+    .price-tag b { color: var(--gold); font-size: 18px; }
+
+    /* Countdown */
+    .countdown { display: flex; gap: 10px; justify-content: center; margin: 34px 0 6px; }
+    .cd { min-width: 74px; padding: 14px 10px; border-radius: 14px; background: rgba(255,255,255,0.6); border: 1px solid var(--line); }
+    .cd .n { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 30px; color: var(--ink); line-height: 1; }
+    .cd .u { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+
+    /* Sections */
+    section { padding: 62px 0; }
+    .sec-head { text-align: center; max-width: 640px; margin: 0 auto 44px; }
+    .sec-head .eyebrow { color: var(--teal); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; font-size: 12px; }
+    .sec-head h2 { font-size: clamp(28px, 4.5vw, 42px); margin: 12px 0 10px; }
+    .sec-head p { color: var(--muted); font-size: 17px; margin: 0; }
+
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    @media (max-width: 860px){ .grid3 { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--navy-700);
+      border: 1px solid var(--line); border-radius: 16px; padding: 28px;
+      box-shadow: 0 1px 2px rgba(25,25,21,0.04);
+    }
+    .card .ic-badge { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 24px; margin-bottom: 16px; }
+    .card h3 { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 18px; margin: 0 0 14px; letter-spacing: -0.01em; line-height: 1.3; }
+    .card ul { margin: 0; padding: 0; list-style: none; }
+    .card li { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; color: #6B5842; font-size: 15px; }
+    .card li::before { content: "▹"; color: var(--gold); font-weight: 800; }
+    .c1 .ic-badge { background: rgba(204,120,92,0.14); color: var(--gold); } .c1 h3 { color: var(--ink); }
+    .c2 .ic-badge { background: rgba(124,106,87,0.16); color: #7C6A57; } .c2 h3 { color: var(--ink); }
+    .c3 .ic-badge { background: rgba(176,102,74,0.16); color: var(--teal); } .c3 h3 { color: var(--ink); }
+
+    /* Why */
+    .why { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    @media (max-width: 760px){ .why { grid-template-columns: repeat(2,1fr); } }
+    .why .card { padding: 22px; }
+    .why .n { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 20px; color: var(--ink); }
+    .why p { color: var(--muted); font-size: 14px; margin: 8px 0 0; }
+
+    /* Register */
+    .reg-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 30px; align-items: start; }
+    @media (max-width: 900px){ .reg-grid { grid-template-columns: 1fr; } }
+    .reg-left h2 { font-size: clamp(28px,4.5vw,40px); margin: 8px 0 14px; }
+    .reg-left p { color: var(--muted); font-size: 17px; line-height: 1.65; }
+    .checklist { margin: 22px 0 0; padding: 0; list-style: none; }
+    .checklist li { display: flex; gap: 10px; padding: 9px 0; color: #5A4632; }
+    .checklist li::before { content: "✓"; color: var(--teal); font-weight: 900; }
+
+    .form-card {
+      background: var(--navy-700);
+      border: 1px solid var(--line); border-radius: 16px; padding: 28px;
+      box-shadow: 0 8px 30px -20px rgba(25,25,21,0.3);
+    }
+    .form-card .ptag { display: flex; align-items: baseline; gap: 8px; margin-bottom: 18px; }
+    .form-card .ptag .p { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 34px; color: var(--ink); }
+    .form-card .ptag .s { color: var(--muted); font-size: 14px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin: 14px 0 6px; }
+    input {
+      width: 100%; padding: 13px 14px; border-radius: 11px; font-size: 15px;
+      background: #FFFFFF; border: 1px solid var(--line); color: var(--ink); font-family: inherit;
+    }
+    input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(180,121,31,0.15); }
+    input::placeholder { color: #B29B7C; }
+    .form-note { color: var(--muted); font-size: 12px; text-align: center; margin-top: 14px; line-height: 1.6; }
+    .pay-methods { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; color: var(--muted); font-size: 12px; }
+    .err { color: #ff9a9a; font-size: 13px; margin-top: 10px; min-height: 18px; }
+
+    .success { text-align: center; padding: 8px 4px; }
+    .success .ok { width: 64px; height: 64px; border-radius: 50%; background: rgba(122,82,48,0.14); color: #7A5230; display: grid; place-items: center; margin: 0 auto 16px; font-size: 32px; }
+    .success h3 { font-size: 24px; margin: 0 0 8px; }
+    .success p { color: var(--muted); line-height: 1.6; }
+    .success .ref { display: inline-block; margin-top: 10px; font-family: monospace; background: rgba(122,82,48,0.06); border: 1px solid var(--line); padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--ink); }
+
+    /* FAQ */
+    .faq { max-width: 760px; margin: 0 auto; }
+    details { border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,0.55); margin-bottom: 12px; overflow: hidden; }
+    summary { cursor: pointer; list-style: none; padding: 18px 20px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; color: var(--gold); font-size: 22px; font-weight: 400; }
+    details[open] summary::after { content: "–"; }
+    details p { margin: 0; padding: 0 20px 18px; color: var(--muted); line-height: 1.6; }
+
+    footer { border-top: 1px solid var(--line); padding: 36px 0; text-align: center; color: var(--muted); font-size: 14px; }
+    footer .brand { justify-content: center; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div class="bg-fx"></div>
+
+  <nav class="top">
+    <div class="wrap nav-in">
+      <div class="brand">
+        <span class="z">Z</span>
+        <span>ZYLO TECH<small>SOLUTIONS</small></span>
+      </div>
+      <div class="nav-cta">
+        <span class="phone" id="navPhone">Register: 0543907751</span>
+        <a href="#register" class="btn btn-gold sm">Reserve my seat</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="kicker">Zylo Tech Solutions Presents</div>
+      <h1>Wealth &amp;<br><span class="l2">Opportunity</span></h1>
+      <div class="mc-badge"><span class="a">Master Class</span><span class="b">2026</span></div>
+      <p class="sub">A four-day live online master class on building wealth — practical investing, data-driven lotto forecasting, and trading technicalities for forex &amp; crypto, with real risk management. Open to all.</p>
+
+      <div class="meta">
+        <span class="chip"><span class="ic">📅</span> <b id="mDate">July 17–20, 2026 (Fri–Mon)</b></span>
+        <span class="chip"><span class="ic">⏰</span> <b id="mTime">7:00 PM GMT daily</b></span>
+        <span class="chip"><span class="ic">💻</span> <b id="mLoc">Online via Zoom</b></span>
+      </div>
+
+      <div class="hero-cta">
+        <a href="#register" class="btn btn-gold">Secure your seat →</a>
+        <a href="#learn" class="btn btn-ghost">What you'll learn</a>
+      </div>
+      <div class="price-tag">Registration <b id="heroPrice">GHS 200</b> · pay with Mobile Money or card</div>
+
+      <div class="countdown" id="countdown" aria-label="Time until the master class">
+        <div class="cd"><div class="n" id="cdD">00</div><div class="u">Days</div></div>
+        <div class="cd"><div class="n" id="cdH">00</div><div class="u">Hours</div></div>
+        <div class="cd"><div class="n" id="cdM">00</div><div class="u">Mins</div></div>
+        <div class="cd"><div class="n" id="cdS">00</div><div class="u">Secs</div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- WHAT YOU'LL LEARN -->
+  <section id="learn">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">What you will learn</div>
+        <h2>Three lanes to financial growth</h2>
+        <p>A focused curriculum drawn straight from the field — no fluff, all application.</p>
+      </div>
+      <div class="grid3">
+        <div class="card c1">
+          <div class="ic-badge">🏛️</div>
+          <h3>Personal Growth &amp; Investment (Banking)</h3>
+          <ul>
+            <li>Investment opportunities</li>
+            <li>Wealth-building principles</li>
+            <li>Success mindset development</li>
+          </ul>
+        </div>
+        <div class="card c2">
+          <div class="ic-badge">📈</div>
+          <h3>Lotto Forecasting &amp; Analytics</h3>
+          <ul>
+            <li>Forecasting techniques</li>
+            <li>Trend analysis</li>
+            <li>Data interpretation</li>
+            <li>Lotto predictions</li>
+            <li>Risk management</li>
+          </ul>
+        </div>
+        <div class="card c3">
+          <div class="ic-badge">📊</div>
+          <h3>Trading &amp; Technical Analytics</h3>
+          <ul>
+            <li>Forex training &amp; technicalities</li>
+            <li>Crypto training &amp; technicalities</li>
+            <li>Risk-management techniques</li>
+            <li>Understanding data</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <div class="why">
+        <div class="card"><div class="n">4 live days</div><p>Real-time teaching across four evenings with daily Q&amp;A — not a pre-recorded course.</p></div>
+        <div class="card"><div class="n">Practical</div><p>Frameworks you can apply the same week, built for the Ghana &amp; West Africa context.</p></div>
+        <div class="card"><div class="n">Open to all</div><p>No prior experience needed — beginners and active traders both welcome.</p></div>
+        <div class="card"><div class="n">MoMo ready</div><p>Pay easily with MTN MoMo, Telecel Cash, AirtelTigo or a bank card.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section id="register">
+    <div class="wrap reg-grid">
+      <div class="reg-left">
+        <div class="eyebrow" style="color:var(--teal);font-weight:700;letter-spacing:3px;text-transform:uppercase;font-size:12px;">Registration open</div>
+        <h2>Secure your seat</h2>
+        <p>Reserve your spot for the Wealth &amp; Opportunity Master Class 2026. Once your payment is confirmed, we'll email your Zoom join link and a reminder before we go live.</p>
+        <ul class="checklist">
+          <li>Instant email confirmation with your join link</li>
+          <li>4 live sessions + daily Q&amp;A</li>
+          <li>Secure checkout powered by Paystack</li>
+          <li>Reminder before the class starts</li>
+        </ul>
+      </div>
+
+      <div class="form-card">
+        <div id="formView">
+          <div class="ptag"><span class="p" id="formPrice">GHS 200</span><span class="s">per seat</span></div>
+          <form id="regForm" novalidate>
+            <label for="name">Full name</label>
+            <input id="name" name="name" type="text" placeholder="Kwame Mensah" autocomplete="name" required />
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" placeholder="you@email.com" autocomplete="email" required />
+            <label for="phone">Phone (Mobile Money)</label>
+            <input id="phone" name="phone" type="tel" placeholder="0543907751" autocomplete="tel" required />
+            <div class="err" id="err"></div>
+            <button class="btn btn-gold block" id="submitBtn" type="submit" style="margin-top:8px;">
+              <span id="submitLabel">Pay GHS 200 &amp; reserve seat</span>
+            </button>
+            <div class="pay-methods">🔒 Secured by Paystack · MoMo &amp; cards</div>
+            <p class="form-note">By registering you agree to receive class details by email. We never share your data.</p>
+          </form>
+        </div>
+
+        <div id="successView" class="success" style="display:none;">
+          <div class="ok">✓</div>
+          <h3 id="successTitle">You're in! 🎉</h3>
+          <p id="successMsg">Your seat is confirmed. Check your email for the Zoom join link and details.</p>
+          <div class="ref" id="successRef"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <div class="sec-head"><div class="eyebrow">FAQ</div><h2>Good to know</h2></div>
+      <div class="faq">
+        <details><summary>How do I join the class after paying?</summary><p>As soon as your payment is confirmed you'll get an email with the Zoom link. We'll also send a reminder shortly before we go live.</p></details>
+        <details><summary>What payment methods can I use?</summary><p>Mobile Money (MTN MoMo, Telecel Cash, AirtelTigo) and Visa/Mastercard, all through Paystack's secure checkout.</p></details>
+        <details><summary>Do I need trading or investing experience?</summary><p>No. The master class is open to all — we start with the fundamentals and build up to practical technique.</p></details>
+        <details><summary>Will there be a recording?</summary><p>Registered attendees will be notified by email if a replay is made available.</p></details>
+        <details><summary>Who is running this?</summary><p>Zylo Tech Solutions — a digital-products company registered in Ghana. Questions? WhatsApp us on <span id="faqPhone">0543907751</span>.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="brand"><span class="z">Z</span><span>ZYLO TECH<small>SOLUTIONS</small></span></div>
+      <p>© <span id="year"></span> Zylo Tech Solutions · Registered in Ghana · Register: <span id="footPhone">0543907751</span></p>
+    </div>
+  </footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let CFG = null;
+
+    function fmtPrice(c) { return `${c.currency} ${c.priceGhs}`; }
+
+    async function loadConfig() {
+      try {
+        CFG = await (await fetch('/api/config')).json();
+      } catch { CFG = null; }
+      if (!CFG) return;
+      const price = fmtPrice(CFG);
+      $('heroPrice').textContent = price;
+      $('formPrice').textContent = price;
+      $('mDate').textContent = CFG.dateLabel;
+      $('mTime').textContent = CFG.timeLabel;
+      $('mLoc').textContent = CFG.location;
+      $('navPhone').textContent = 'Register: ' + CFG.phone;
+      $('faqPhone').textContent = CFG.phone;
+      $('footPhone').textContent = CFG.phone;
+      $('submitLabel').textContent = CFG.paymentsEnabled ? `Pay ${price} & reserve seat` : 'Reserve my free seat';
+      startCountdown(CFG.dateISO);
+    }
+
+    function startCountdown(iso) {
+      const target = new Date(iso).getTime();
+      const pad = (n) => String(Math.max(0, n)).padStart(2, '0');
+      const tick = () => {
+        const d = target - Date.now();
+        if (d <= 0) { $('countdown').innerHTML = '<div class="cd" style="min-width:auto;padding:14px 22px;"><div class="n" style="font-size:20px;">It\'s live! 🎉</div></div>'; return; }
+        const s = Math.floor(d / 1000);
+        $('cdD').textContent = pad(Math.floor(s / 86400));
+        $('cdH').textContent = pad(Math.floor((s % 86400) / 3600));
+        $('cdM').textContent = pad(Math.floor((s % 3600) / 60));
+        $('cdS').textContent = pad(s % 60);
+        requestAnimationFrame(() => {});
+      };
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    function showSuccess(reference, emailSent) {
+      $('formView').style.display = 'none';
+      const sv = $('successView');
+      sv.style.display = 'block';
+      $('successMsg').textContent = emailSent
+        ? "Your seat is confirmed and we've emailed your Zoom join link and details. See you there!"
+        : "Your seat is confirmed! We'll email your Zoom join link shortly. Keep an eye on your inbox.";
+      if (reference) $('successRef').textContent = 'Ref: ' + reference;
+      sv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function setLoading(on, label) {
+      $('submitBtn').disabled = on;
+      $('submitLabel').textContent = on ? (label || 'Processing…') : $('submitLabel').textContent;
+    }
+
+    async function verify(reference) {
+      const res = await fetch('/api/pay/verify', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reference })
+      });
+      return res.json();
+    }
+
+    $('regForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      $('err').textContent = '';
+      const name = $('name').value.trim();
+      const email = $('email').value.trim();
+      const phone = $('phone').value.trim();
+
+      setLoading(true, 'Reserving…');
+      let reg;
+      try {
+        const res = await fetch('/api/register', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone })
+        });
+        reg = await res.json();
+        if (!res.ok) { $('err').textContent = reg.error || 'Something went wrong.'; setLoading(false); return; }
+      } catch {
+        $('err').textContent = 'Network error — please try again.'; setLoading(false); return;
+      }
+
+      // Free / lead-gen mode
+      if (!reg.paymentsEnabled) { showSuccess(reg.reference, reg.emailSent); return; }
+
+      // Paystack checkout
+      if (reg.paystackPublicKey && window.PaystackPop) {
+        setLoading(true, 'Opening payment…');
+        const handler = window.PaystackPop.setup({
+          key: reg.paystackPublicKey,
+          email: reg.email,
+          amount: reg.amountMinor,
+          currency: reg.currency,
+          ref: reg.reference,
+          onClose: () => { setLoading(false); $('err').textContent = 'Payment window closed. Your seat is not yet reserved.'; },
+          callback: (response) => {
+            setLoading(true, 'Confirming…');
+            verify(response.reference).then((v) => {
+              if (v.confirmed) showSuccess(response.reference, v.emailSent);
+              else { $('err').textContent = v.error || 'We could not confirm your payment.'; setLoading(false); }
+            }).catch(() => { $('err').textContent = 'Could not confirm payment — contact us with your reference.'; setLoading(false); });
+          }
+        });
+        handler.openIframe();
+        return;
+      }
+
+      // No public key configured (e.g. local dev with DEV_FAKE_PAYMENTS): try server verify directly.
+      setLoading(true, 'Confirming…');
+      const v = await verify(reg.reference);
+      if (v.confirmed) showSuccess(reg.reference, v.emailSent);
+      else { $('err').textContent = 'Online payment isn\'t set up yet. We\'ve saved your details and will send payment instructions by email.'; setLoading(false); }
+    });
+
+    $('year').textContent = new Date().getFullYear();
+    loadConfig();
+  </script>
+</body>
+</html>
