@@ -6,7 +6,7 @@ import { randomBytes } from "node:crypto";
 import { config, publicConfig } from "./src/config.js";
 import * as store from "./src/store.js";
 import { verifyTransaction } from "./src/paystack.js";
-import { sendThankYou, sendReminder } from "./src/email.js";
+import { sendThankYou, sendReminder, buildThankYouHtml, buildReminderHtml } from "./src/email.js";
 import { createRegistration, updateRegistration, airtableEnabled } from "./src/airtable.js";
 
 // Send the confirmation email only if the backend owns email delivery. When the
@@ -154,6 +154,26 @@ app.post("/admin/send-reminders", requireAdmin, async (_req, res) => {
     await store.updateByReference(reg.reference, { reminderSentAt: r.sent ? new Date().toISOString() : reg.reminderSentAt });
   }
   res.json({ total: recipients.length, sent, failed: failures.length, failures });
+});
+
+// ---- Preview the emails in your browser (renders sample data, sends nothing) ----
+// Confirmation:  /preview/confirmation   (add ?status=registered for the free-mode variant)
+// Reminder:      /preview/reminder
+const sampleReg = () => ({
+  name: "Kwame Mensah",
+  email: "kwame@example.com",
+  phone: config.webinar.phone,
+  reference: "ZYLO-WMC26-DEMO-123456",
+  priceGhs: config.priceGhs,
+  status: "paid",
+  createdAt: new Date().toISOString(),
+});
+app.get("/preview/confirmation", (req, res) => {
+  const reg = { ...sampleReg(), status: req.query.status === "registered" ? "registered" : "paid" };
+  res.type("html").send(buildThankYouHtml(reg));
+});
+app.get("/preview/reminder", (_req, res) => {
+  res.type("html").send(buildReminderHtml(sampleReg()));
 });
 
 app.get("/health", (_req, res) => res.json({ ok: true }));

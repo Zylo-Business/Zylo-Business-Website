@@ -17,6 +17,9 @@ build/
 # Runtime data (webinar leads live here locally)
 webinar/data/
 
+# Local rendered email previews (contain the real phone number; regenerate with npm run preview:emails)
+webinar/templates/previews/
+
 # Logs & temp
 *.log
 npm-debug.log*

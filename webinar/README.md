@@ -120,12 +120,24 @@ keep sending directly and use Zapier only for Mailchimp list-building.
 
 ### 4. Reminder email ("24 hours to go")
 
-Two on-brand HTML templates live in `templates/` (ivory/clay, matching the site):
+On-brand HTML templates live in `templates/` (ivory/clay, matching the site):
 
-| File | Email |
-|---|---|
-| `templates/confirmation-email.html` | Sent on registration/payment |
-| `templates/reminder-email.html` | Sent ~24 h before the class |
+| File | Email | For |
+|---|---|---|
+| `templates/confirmation-email.html` | Confirmation, on registration/payment | Resend / Zapier (`{{tokens}}`) |
+| `templates/reminder-email.html` | Reminder, ~24 h before the class | Resend / Zapier (`{{tokens}}`) |
+| `templates/mailchimp/welcome-email.html` | Welcome, when added to the audience | **Mailchimp** (`*|MERGE|*` tags) |
+| `templates/mailchimp/reminder-email.html` | Reminder | **Mailchimp** (`*|MERGE|*` tags) |
+
+**Mailchimp emails are built inside Mailchimp**, not sent by this backend. The two files in
+`templates/mailchimp/` are ready to paste into Mailchimp → *Create → Email → "Code your own"*
+(or as an Automation email). They use Mailchimp merge tags (`*|FNAME|*`) and include the
+required unsubscribe + physical-address footer. Before sending, replace `[[ZOOM_LINK]]` and
+`[[WHATSAPP_NUMBER]]`, and set an audience default for `FNAME` (e.g. "there").
+
+> Rule of thumb: **Resend** for the transactional receipt (Zoom link + reference),
+> **Mailchimp** for the audience, welcome, and any newsletter/nurture. Pick one sender per
+> message so nobody gets duplicates.
 
 **Option A — scheduled Zap (recommended):** *Schedule by Zapier* (the day before) →
 Airtable *Find Records* where `Status = Paid` → Resend *Send Email* using

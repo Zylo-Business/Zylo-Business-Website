@@ -1,0 +1,72 @@
+<!--
+  Zylo Tech — Mailchimp REMINDER email ("24 hours to go", ivory/clay brand)
+
+  HOW TO USE:
+    - Best as a Mailchimp Automation step scheduled to send the day before the class,
+      OR a regular campaign you schedule manually.
+    - Mailchimp → "Code your own" → paste this whole file.
+    - *|FNAME|* is Mailchimp's merge tag (set an audience default like "there").
+    - Edit the event details / replace [[ZOOM_LINK]] and [[WHATSAPP_NUMBER]].
+
+  Keep the *|UNSUB|* and *|LIST:ADDRESS|* footer — required by Mailchimp / law.
+-->
+<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background:#F0EEE6;font-family:Arial,Helvetica,sans-serif;color:#191915;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F0EEE6;">
+      <tr><td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+          <tr><td align="center" style="padding-bottom:18px;font-size:12px;letter-spacing:3px;font-weight:bold;color:#CC785C;">
+            ZYLO&nbsp;TECH&nbsp;SOLUTIONS
+          </td></tr>
+          <tr><td style="background:#FAF9F5;border:1px solid #DDD8C8;border-radius:16px;padding:34px;">
+            <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#CC785C;font-weight:bold;margin:0 0 10px;">&#9200; Starting soon</div>
+            <h1 style="margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:27px;line-height:1.2;color:#191915;">
+              Almost time, *|FNAME|*!
+            </h1>
+            <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:#6E675A;">
+              This is your reminder that the <strong style="color:#191915;">Wealth &amp; Opportunity Master Class 2026</strong>
+              begins in about 24 hours. Add it to your calendar and join a few minutes early.
+            </p>
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #EAE6D8;margin:0 0 26px;">
+              <tr>
+                <td style="padding:12px 0;border-bottom:1px solid #EAE6D8;font-size:14px;color:#8A806E;">Date</td>
+                <td align="right" style="padding:12px 0;border-bottom:1px solid #EAE6D8;font-size:14px;color:#191915;font-weight:bold;">July 17–20, 2026 (Fri–Mon)</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;border-bottom:1px solid #EAE6D8;font-size:14px;color:#8A806E;">Time</td>
+                <td align="right" style="padding:12px 0;border-bottom:1px solid #EAE6D8;font-size:14px;color:#191915;font-weight:bold;">7:00 PM GMT daily</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0;font-size:14px;color:#8A806E;">Where</td>
+                <td align="right" style="padding:12px 0;font-size:14px;color:#191915;font-weight:bold;">Online via Zoom</td>
+              </tr>
+            </table>
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
+              <a href="[[ZOOM_LINK]]"
+                 style="display:inline-block;background:#CC785C;color:#ffffff;font-weight:bold;font-size:15px;
+                        text-decoration:none;padding:15px 30px;border-radius:10px;">
+                Join the Master Class &rarr;
+              </a>
+            </td></tr></table>
+
+            <p style="margin:24px 0 0;font-size:12px;line-height:1.65;color:#8A806E;">
+              See you there! Questions? Reply to this email or WhatsApp us on [[WHATSAPP_NUMBER]].
+            </p>
+          </td></tr>
+
+          <!-- Required footer: unsubscribe + physical address -->
+          <tr><td align="center" style="padding-top:20px;font-size:11px;line-height:1.6;color:#9A917E;">
+            Zylo Tech Solutions &middot; Registered in Ghana<br>
+            <a href="*|UNSUB|*" style="color:#9A917E;">Unsubscribe</a> &middot;
+            <a href="*|UPDATE_PROFILE|*" style="color:#9A917E;">Update preferences</a><br>
+            *|LIST:ADDRESS|*<br>
+            &copy; *|CURRENT_YEAR|* Zylo Tech Solutions
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>
