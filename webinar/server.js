@@ -6,7 +6,7 @@ import { randomBytes } from "node:crypto";
 import { config, publicConfig } from "./src/config.js";
 import * as store from "./src/store.js";
 import { verifyTransaction } from "./src/paystack.js";
-import { sendThankYou } from "./src/email.js";
+import { sendThankYou, sendReminder } from "./src/email.js";
 import { createRegistration, updateRegistration, airtableEnabled } from "./src/airtable.js";
 
 // Send the confirmation email only if the backend owns email delivery. When the
@@ -137,6 +137,23 @@ app.get("/admin/registrations.csv", requireAdmin, async (_req, res) => {
   res.setHeader("Content-Type", "text/csv");
   res.setHeader("Content-Disposition", 'attachment; filename="zylotech-webinar-leads.csv"');
   res.send(csv);
+});
+
+// ---- Admin: send the "24 hours to go" reminder to every confirmed registrant ----
+// Handy if you're NOT using a scheduled Zap. Point a cron/uptime pinger at this the day
+// before, or trigger it manually. Idempotency is on you (don't call it twice).
+app.post("/admin/send-reminders", requireAdmin, async (_req, res) => {
+  const all = await store.allRegistrations();
+  const recipients = all.filter((r) => r.status === "paid" || r.status === "registered");
+  let sent = 0;
+  const failures = [];
+  for (const reg of recipients) {
+    const r = await sendReminder(reg);
+    if (r.sent) sent++;
+    else failures.push({ email: reg.email, reason: r.reason });
+    await store.updateByReference(reg.reference, { reminderSentAt: r.sent ? new Date().toISOString() : reg.reminderSentAt });
+  }
+  res.json({ total: recipients.length, sent, failed: failures.length, failures });
 });
 
 app.get("/health", (_req, res) => res.json({ ok: true }));

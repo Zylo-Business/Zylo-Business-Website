@@ -118,6 +118,31 @@ Once a Zap sends the confirmation email, set **`BACKEND_SENDS_EMAIL=false`** in 
 the backend stops sending its own Resend email. Leave it `true` if you'd rather the backend
 keep sending directly and use Zapier only for Mailchimp list-building.
 
+### 4. Reminder email ("24 hours to go")
+
+Two on-brand HTML templates live in `templates/` (ivory/clay, matching the site):
+
+| File | Email |
+|---|---|
+| `templates/confirmation-email.html` | Sent on registration/payment |
+| `templates/reminder-email.html` | Sent ~24 h before the class |
+
+**Option A — scheduled Zap (recommended):** *Schedule by Zapier* (the day before) →
+Airtable *Find Records* where `Status = Paid` → Resend *Send Email* using
+`reminder-email.html`. Subject: `Starts tomorrow — Wealth & Opportunity Master Class 2026`.
+
+**Option B — backend trigger:** if you're not using Zapier for this, POST to
+`/admin/send-reminders` (admin-token protected) the day before and the backend emails
+every confirmed registrant via Resend:
+
+```bash
+curl -X POST "http://localhost:4000/admin/send-reminders?token=YOUR_ADMIN_TOKEN"
+# → { "total": 42, "sent": 42, "failed": 0, "failures": [] }
+```
+
+Point a cron job / uptime pinger at that URL to automate it. It isn't idempotent, so
+trigger it once.
+
 > Airtable is optional: if `AIRTABLE_API_KEY`/`AIRTABLE_BASE_ID` are unset, the backend
 > just skips it and keeps working with the local store + direct Resend email.
 
