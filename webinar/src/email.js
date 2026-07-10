@@ -3,45 +3,66 @@ import { config } from "./config.js";
 
 const resend = config.resendApiKey ? new Resend(config.resendApiKey) : null;
 
+function detailRow(label, value, last) {
+  const border = last ? "" : "border-bottom:1px solid #EAE6D8;";
+  return `<tr>
+    <td style="padding:12px 0;${border}font-size:14px;color:#8A806E;">${label}</td>
+    <td align="right" style="padding:12px 0;${border}font-size:14px;color:#191915;font-weight:bold;">${value}</td>
+  </tr>`;
+}
+
 function buildHtml(reg) {
   const w = config.webinar;
   const paid = reg.status === "paid";
+  const firstName = escape(reg.name.split(" ")[0]);
+  const intro = paid
+    ? `Your seat for the <strong style="color:#191915;">${escape(w.title)}</strong> is confirmed and your payment was received.`
+    : `Thanks for registering for the <strong style="color:#191915;">${escape(w.title)}</strong>.`;
+
+  const rows =
+    detailRow("Date", escape(w.dateLabel)) +
+    detailRow("Time", escape(w.timeLabel)) +
+    detailRow("Where", escape(w.location), !paid) +
+    (paid ? detailRow("Reference", escape(reg.reference), true) : "");
+
   return `<!doctype html>
 <html>
-  <body style="margin:0;background:#0a1533;font-family:Segoe UI,Arial,sans-serif;color:#e8edff;">
-    <div style="max-width:560px;margin:0 auto;padding:32px 24px;">
-      <div style="text-align:center;margin-bottom:8px;font-weight:800;letter-spacing:2px;color:#F5B301;">
-        ZYLO&nbsp;TECH&nbsp;SOLUTIONS
-      </div>
-      <div style="background:#0f1f4d;border:1px solid #24356f;border-radius:16px;padding:28px;">
-        <h1 style="margin:0 0 6px;font-size:22px;color:#ffffff;">You're in, ${escape(reg.name.split(" ")[0])}! 🎉</h1>
-        <p style="margin:0 0 18px;color:#aab6e6;font-size:15px;line-height:1.6;">
-          ${paid
-            ? "Your seat for the <strong style='color:#fff'>" + escape(w.title) + "</strong> is confirmed and your payment was received."
-            : "Thanks for registering for the <strong style='color:#fff'>" + escape(w.title) + "</strong>."}
-        </p>
+  <body style="margin:0;padding:0;background:#F0EEE6;font-family:Arial,Helvetica,sans-serif;color:#191915;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F0EEE6;">
+      <tr><td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+          <tr><td align="center" style="padding-bottom:18px;font-size:12px;letter-spacing:3px;font-weight:bold;color:#CC785C;">
+            ZYLO&nbsp;TECH&nbsp;SOLUTIONS
+          </td></tr>
+          <tr><td style="background:#FAF9F5;border:1px solid #DDD8C8;border-radius:16px;padding:34px;">
+            <h1 style="margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:27px;line-height:1.2;color:#191915;">
+              You're in, ${firstName}! <span style="color:#CC785C;">🎉</span>
+            </h1>
+            <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:#6E675A;">${intro}</p>
 
-        <table style="width:100%;border-collapse:collapse;margin:0 0 20px;font-size:14px;">
-          <tr><td style="padding:8px 0;color:#8ea0dd;">📅 Date</td><td style="padding:8px 0;text-align:right;color:#fff;">${escape(w.dateLabel)}</td></tr>
-          <tr><td style="padding:8px 0;color:#8ea0dd;">⏰ Time</td><td style="padding:8px 0;text-align:right;color:#fff;">${escape(w.timeLabel)}</td></tr>
-          <tr><td style="padding:8px 0;color:#8ea0dd;">📍 Where</td><td style="padding:8px 0;text-align:right;color:#fff;">${escape(w.location)}</td></tr>
-          ${paid ? `<tr><td style="padding:8px 0;color:#8ea0dd;">🧾 Reference</td><td style="padding:8px 0;text-align:right;color:#fff;">${escape(reg.reference)}</td></tr>` : ""}
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #EAE6D8;margin:0 0 26px;">
+              ${rows}
+            </table>
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
+              <a href="${escape(w.zoomLink)}"
+                 style="display:inline-block;background:#CC785C;color:#ffffff;font-weight:bold;font-size:15px;
+                        text-decoration:none;padding:15px 30px;border-radius:10px;">
+                Join the Master Class &rarr;
+              </a>
+            </td></tr></table>
+
+            <p style="margin:24px 0 0;font-size:12px;line-height:1.65;color:#8A806E;">
+              Save this email — it has your join link. We'll send a reminder before we go live.
+              Questions? Reply to this email or WhatsApp us on ${escape(w.phone)}.
+            </p>
+          </td></tr>
+          <tr><td align="center" style="padding-top:20px;font-size:12px;color:#9A917E;">
+            Zylo Tech Solutions &middot; Registered in Ghana
+          </td></tr>
         </table>
-
-        <a href="${escape(w.zoomLink)}"
-           style="display:block;text-align:center;background:#F5B301;color:#0a1533;font-weight:800;
-                  padding:14px;border-radius:10px;text-decoration:none;font-size:15px;">
-          Join the Master Class →
-        </a>
-        <p style="margin:14px 0 0;color:#8ea0dd;font-size:12px;line-height:1.6;">
-          Save this email — it contains your join link. We'll also send a reminder before we go live.
-          Questions? Reply to this email or WhatsApp us on ${escape(w.phone)}.
-        </p>
-      </div>
-      <p style="text-align:center;color:#5b6aa0;font-size:12px;margin-top:20px;">
-        Zylo Tech Solutions · Registered in Ghana
-      </p>
-    </div>
+      </td></tr>
+    </table>
   </body>
 </html>`;
 }
