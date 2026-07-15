@@ -7,7 +7,7 @@ a standalone webinar campaign with lead capture and payments.
 
 | Folder | What it is |
 |---|---|
-| `frontend/zylotech` | Main marketing site — React 18 + Vite + TypeScript + Tailwind (Home, Products, About, Blog, Contact). |
+| `zylotech` | Main marketing site — React 18 + Vite + TypeScript + Tailwind (Home, Products, About, Blog, Contact). |
 | `webinar` | Self-contained "Wealth & Opportunity Master Class 2026" landing page + Express backend (lead capture, Paystack payments, Resend confirmation emails, CSV lead export). |
 | `ai` | Build specs and notes. |
 | `backend` | Reserved for shared backend services. |
@@ -16,7 +16,7 @@ a standalone webinar campaign with lead capture and payments.
 
 ```bash
 # Main site
-cd frontend/zylotech && npm install && npm run dev
+cd zylotech && npm install && npm run dev
 
 # Webinar campaign
 cd webinar && npm install && cp .env.example .env && npm start
