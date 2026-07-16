@@ -17,14 +17,14 @@ export const config = {
 
   webinar: {
     title: process.env.WEBINAR_TITLE || "Wealth & Opportunity Master Class 2026",
-    dateISO: process.env.WEBINAR_DATE_ISO || "2026-07-17T19:00:00Z",
-    dateLabel: process.env.WEBINAR_DATE_LABEL || "July 17–20, 2026 (Fri–Mon)",
+    dateISO: process.env.WEBINAR_DATE_ISO || "2026-07-24T19:00:00Z",
+    dateLabel: process.env.WEBINAR_DATE_LABEL || "July 24–27, 2026 (Fri–Mon)",
     timeLabel: process.env.WEBINAR_TIME_LABEL || "7:00 PM GMT daily",
     location: process.env.WEBINAR_LOCATION || "Online via Zoom",
     zoomLink: process.env.WEBINAR_ZOOM_LINK || "https://zoom.us/j/PLACEHOLDER",
     // Raw number is used ONLY server-side (e.g. the confirmation email). It is never
     // sent to the browser as plain text — see publicConfig() which emits an encoded token.
-    phone: process.env.REGISTER_PHONE || "0000000000",
+    phone: process.env.REGISTER_PHONE || "0245426025",
   },
 
   // Pricing
