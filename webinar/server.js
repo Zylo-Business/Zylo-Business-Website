@@ -17,35 +17,26 @@ async function maybeSendEmail(reg) {
   return sendThankYou(reg);
 }
 
-// Confirm a payment by checking its status with Hubtel, then (once) mark the seat paid,
-// mirror it into Airtable, and send the confirmation email. Idempotent: safe to call from
-// both the Hubtel callback and the return-page status poll.
-async function confirmPayment(reference) {
-  const reg = await store.findByReference(reference);
-  if (!reg) return { confirmed: false, error: "Registration not found.", notFound: true };
+// Mark a registration paid exactly once: update the store, mirror to Airtable, send the
+// confirmation email. Idempotent — if it's already paid we return without re-sending.
+// The caller is responsible for having established that the payment succeeded.
+async function finalizePaid(reg, { channel, paidAt, simulated } = {}) {
   if (reg.status === "paid") {
     return { confirmed: true, alreadyProcessed: true, emailSent: reg.emailSent };
   }
-
-  const result = await checkPaymentStatus(reference);
-  if (!result.ok) {
-    await store.updateByReference(reference, { lastError: result.error });
-    return { confirmed: false, error: result.error || "Payment not completed." };
-  }
-
-  await store.updateByReference(reference, {
+  await store.updateByReference(reg.reference, {
     status: "paid",
-    paidAt: result.data?.date || new Date().toISOString(),
-    channel: result.data?.channel || null,
-    simulated: !!result.simulated,
+    paidAt: paidAt || new Date().toISOString(),
+    channel: channel || null,
+    simulated: !!simulated,
   });
-  const updated = await store.findByReference(reference);
+  const updated = await store.findByReference(reg.reference);
 
   // Mirror the "Paid" status into Airtable so Zapier can fire its confirmed-buyer flow.
   if (updated.airtableId) await updateRegistration(updated.airtableId, updated);
 
   const email = await maybeSendEmail(updated);
-  await store.updateByReference(reference, { emailSent: email.sent, emailError: email.reason || null });
+  await store.updateByReference(reg.reference, { emailSent: email.sent, emailError: email.reason || null });
   return { confirmed: true, emailSent: email.sent };
 }
 
@@ -115,28 +106,60 @@ app.post("/api/register", async (req, res) => {
 // ---- Step 2a: Hubtel's server-to-server callback (the source of truth for "paid") ----
 // Hubtel POSTs here once the customer finishes on the hosted checkout page. This fires
 // even if the customer never makes it back to the return page (e.g. closes the tab).
+// The callback payload IS Hubtel's authoritative result, so we trust it here (verifying the
+// amount) rather than depending on the Status Check API, which requires IP whitelisting.
 app.post("/api/hubtel/callback", async (req, res) => {
-  const d = req.body?.Data || req.body?.data || req.body || {};
-  const reference = d.ClientReference || d.clientReference || req.body?.clientReference;
-  if (reference) {
-    try {
-      await confirmPayment(String(reference).trim());
-    } catch (err) {
-      console.error("[hubtel] callback error:", err);
+  const b = req.body || {};
+  const d = b.Data || b.data || {};
+  const reference = String(d.ClientReference || d.clientReference || b.clientReference || "").trim();
+  const statusStr = String(d.Status || b.Status || "").toLowerCase();
+  const responseCode = String(b.ResponseCode || b.responseCode || d.ResponseCode || "");
+  const amount = Number(d.Amount ?? d.AmountPaid ?? d.amount ?? 0);
+
+  try {
+    if (reference) {
+      const reg = await store.findByReference(reference);
+      if (reg && reg.status !== "paid") {
+        const paid = statusStr === "success" || responseCode === "0000";
+        const amountOk = !amount || amount >= reg.priceGhs; // amount is sometimes omitted
+        if (paid && amountOk) {
+          await finalizePaid(reg, { channel: d.Channel || d.PaymentDetails?.Channel, paidAt: d.Date });
+        } else {
+          await store.updateByReference(reference, {
+            lastError: `callback not paid (status=${d.Status || b.Status}, code=${responseCode}, amount=${amount})`,
+          });
+        }
+      }
     }
+  } catch (err) {
+    console.error("[hubtel] callback error:", err);
   }
   // Always ack with 200 so Hubtel doesn't retry endlessly; the return page reconciles too.
   res.json({ received: true });
 });
 
 // ---- Step 2b: the return page polls this to learn whether the payment went through ----
+// Fast path: the callback has already marked it paid → confirm from the store. Otherwise
+// try the Status Check API as a fallback (may be unavailable if the server IP isn't
+// whitelisted); if so, report "pending" so the page keeps waiting for the callback.
 app.get("/api/pay/status", async (req, res) => {
   const reference = String(req.query.reference || "").trim();
   if (!reference) return res.status(400).json({ error: "Missing payment reference." });
 
-  const result = await confirmPayment(reference);
-  if (result.notFound) return res.status(404).json({ error: result.error });
-  return res.json(result);
+  const reg = await store.findByReference(reference);
+  if (!reg) return res.status(404).json({ error: "Registration not found." });
+  if (reg.status === "paid") return res.json({ confirmed: true, emailSent: reg.emailSent });
+
+  const result = await checkPaymentStatus(reference);
+  if (result.ok) {
+    const r = await finalizePaid(reg, {
+      channel: result.data?.channel,
+      paidAt: result.data?.date,
+      simulated: result.simulated,
+    });
+    return res.json(r);
+  }
+  return res.json({ confirmed: false, pending: true });
 });
 
 // ---- Admin: view / export the leads list (protected by ADMIN_TOKEN) ----
