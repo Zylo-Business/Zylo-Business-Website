@@ -1,6 +1,6 @@
 # Zylo Tech — Wealth & Opportunity Master Class 2026
 
-A self-contained webinar landing page with lead capture, Paystack payments, and
+A self-contained webinar landing page with lead capture, Hubtel payments, and
 Resend thank-you emails. Registrations are stored in this project's own backend
 (a local JSON datastore) — no external database required.
 
@@ -10,7 +10,7 @@ webinar/
 ├── src/
 │   ├── config.js        # Reads .env, single source of truth for webinar + pricing
 │   ├── store.js         # JSON-file datastore (data/registrations.json)
-│   ├── paystack.js      # Server-side payment verification
+│   ├── hubtel.js        # Hubtel checkout initiate + status verification
 │   └── email.js         # Resend thank-you email
 ├── public/
 │   └── index.html       # The landing page (flier-styled, dark theme)
@@ -37,19 +37,21 @@ Open http://localhost:4000 to see the landing page.
 | `WEBINAR_DATE_ISO` / `WEBINAR_DATE_LABEL` / `WEBINAR_TIME_LABEL` | Class date & time. `DATE_ISO` is the start (drives the countdown); the labels drive the page copy. Currently a **4-day event: July 17–20, 2026 (Fri–Mon), 7:00 PM GMT daily**. |
 | `WEBINAR_ZOOM_LINK` | The Zoom join link included in the confirmation email. |
 | `PRICE_GHS` | Ticket price in cedis (**200**). Set to `0` for free lead-gen mode (no payment). |
-| `PAYSTACK_PUBLIC_KEY` / `PAYSTACK_SECRET_KEY` | From your [Paystack dashboard](https://dashboard.paystack.com/#/settings/developers). Public key is used in the browser; secret key verifies payments server-side. |
+| `HUBTEL_API_ID` / `HUBTEL_API_KEY` | Your [Hubtel](https://developers.hubtel.com) API credentials (API ID = Basic-auth username, API Key = password). Used server-side only. |
+| `HUBTEL_MERCHANT_ACCOUNT` | Your Hubtel **POS Sales / Merchant Account Number** — required to initiate a checkout and check a transaction's status. |
+| `PUBLIC_BASE_URL` | The public URL of this server (e.g. your domain, or an ngrok URL in dev). Hubtel posts its payment callback and redirects the customer back to URLs built from this. |
 | `RESEND_API_KEY` | From [resend.com/api-keys](https://resend.com/api-keys). Without it, emails are logged to the console instead of sent. |
 | `FROM_EMAIL` | Sender, e.g. `Zylo Tech Solutions <hello@zylotech.com>`. The domain must be verified in Resend. |
 | `ADMIN_TOKEN` | A long random string that protects your leads list. |
 
 ## How the flow works
 
-1. Visitor fills the form → `POST /api/register` saves a **pending** lead and returns a payment reference.
-2. Paystack checkout opens in the browser (Mobile Money or card).
-3. On success → `POST /api/pay/verify` verifies the transaction with your **secret key**, marks the lead **paid**, and sends the Resend thank-you email.
-4. The visitor sees a confirmation with their reference.
+1. Visitor fills the form → `POST /api/register` saves a **pending** lead and asks Hubtel to create a checkout (`POST /items/initiate`), returning a hosted `checkoutUrl`.
+2. The browser redirects to Hubtel's secure checkout page; the customer pays (Mobile Money or card).
+3. Hubtel then does two things: it **POSTs a server-to-server callback** to `/api/hubtel/callback` (the source of truth), and it **redirects the customer back** to the site with `?ref=…&pay=return`.
+4. Either path calls `confirmPayment()`, which verifies the transaction via Hubtel's **Status Check API**, marks the lead **paid**, mirrors it to Airtable, and sends the Resend thank-you email. The return page polls `GET /api/pay/status` and shows the confirmation.
 
-Payment verification is done **server-side** and checks the amount, so the price can't be tampered with from the browser.
+Payment confirmation is done **server-side** and checks the amount, so the price can't be tampered with from the browser. Because Hubtel calls back to `PUBLIC_BASE_URL`, that must be publicly reachable (use ngrok in dev — see `ngrok-out.txt`).
 
 ## Your leads (the backend list)
 
@@ -61,15 +63,17 @@ Every registration is stored in `data/registrations.json`. View or export them:
 ## Data & automation pipeline
 
 ```
-Checkout / Registration  →  Airtable  →  Zapier  →  Mailchimp / Resend
-   (this backend)          (CRM /        (no-code     (audience + emails)
+Checkout / Registration  →  Airtable  →  Zapier  →  Resend
+   (this backend)          (CRM /        (no-code     (emails)
                             source of     automation)
                             record)
 ```
 
 The backend writes every registration to **Airtable**; **Zapier** watches that table and
-drives **Mailchimp** (audience/tags) and/or **Resend** (emails). The local
-`data/registrations.json` is kept as a backup.
+drives **Resend** (emails). The local `data/registrations.json` is kept as a backup.
+
+> By default the backend already sends the confirmation email directly via Resend, so
+> the Zapier step is optional — use it if you want a no-code layer for reminders/nurture.
 
 ### 1. Airtable — create the table
 
@@ -97,26 +101,21 @@ The backend **creates** a row on registration and **updates** it to `Status = Pa
 (with `Paid At` / `Channel`) after payment is verified — so you can trigger different
 Zaps for new leads vs. confirmed buyers.
 
-### 2. Zapier — from Airtable to Mailchimp / Resend
+### 2. Zapier — from Airtable to Resend
 
-Build one or both Zaps in your Zapier account:
-
-**Mailchimp (audience + welcome automation)**
-1. **Trigger:** Airtable → *New or Updated Record* on the `Registrations` table.
-2. *(optional)* **Filter:** only continue if `Status` is `Paid` (or `Registered` for a lead nurture).
-3. **Action:** Mailchimp → *Add/Update Subscriber* — map `Email`, `Name`; add a tag like
-   `master-class-2026`. A Mailchimp automation can then send the welcome/reminder series.
+Optional (the backend already sends the confirmation email itself). Use Zapier if you
+want a no-code layer for the emails or a nurture sequence:
 
 **Resend (transactional confirmation email)**
 1. **Trigger:** Airtable → *New or Updated Record*, **Filter** `Status = Paid`.
 2. **Action:** Resend → *Send Email* (or Webhooks → POST to the Resend API), mapping
-   `Email`, `Name`, and `Reference` into your template.
+   `Email`, `Name`, and `Reference` into your template (see `templates/`).
 
 ### 3. Avoid duplicate emails
 
-Once a Zap sends the confirmation email, set **`BACKEND_SENDS_EMAIL=false`** in `.env` so
-the backend stops sending its own Resend email. Leave it `true` if you'd rather the backend
-keep sending directly and use Zapier only for Mailchimp list-building.
+If you set up the Zap above to send the confirmation email, set
+**`BACKEND_SENDS_EMAIL=false`** in `.env` so the backend stops sending its own Resend
+email. Leave it `true` (the default) if the backend should keep sending directly.
 
 ### 4. Reminder email ("24 hours to go")
 
@@ -126,18 +125,10 @@ On-brand HTML templates live in `templates/` (ivory/clay, matching the site):
 |---|---|---|
 | `templates/confirmation-email.html` | Confirmation, on registration/payment | Resend / Zapier (`{{tokens}}`) |
 | `templates/reminder-email.html` | Reminder, ~24 h before the class | Resend / Zapier (`{{tokens}}`) |
-| `templates/mailchimp/welcome-email.html` | Welcome, when added to the audience | **Mailchimp** (`*|MERGE|*` tags) |
-| `templates/mailchimp/reminder-email.html` | Reminder | **Mailchimp** (`*|MERGE|*` tags) |
 
-**Mailchimp emails are built inside Mailchimp**, not sent by this backend. The two files in
-`templates/mailchimp/` are ready to paste into Mailchimp → *Create → Email → "Code your own"*
-(or as an Automation email). They use Mailchimp merge tags (`*|FNAME|*`) and include the
-required unsubscribe + physical-address footer. Before sending, replace `[[ZOOM_LINK]]` and
-`[[WHATSAPP_NUMBER]]`, and set an audience default for `FNAME` (e.g. "there").
-
-> Rule of thumb: **Resend** for the transactional receipt (Zoom link + reference),
-> **Mailchimp** for the audience, welcome, and any newsletter/nurture. Pick one sender per
-> message so nobody gets duplicates.
+These are the same emails the backend generates in `src/email.js`. The `{{token}}` copies
+in `templates/` are for pasting into a Zapier *Resend → Send Email* action if you prefer to
+drive the emails from Zapier instead of the backend.
 
 **Option A — scheduled Zap (recommended):** *Schedule by Zapier* (the day before) →
 Airtable *Find Records* where `Status = Paid` → Resend *Send Email* using
@@ -161,14 +152,16 @@ trigger it once.
 ## Testing without live keys
 
 Set `DEV_FAKE_PAYMENTS=true` in `.env` to simulate a successful payment without
-calling Paystack — the whole register → confirm → email flow runs end-to-end so you
-can test the page. **Set it back to `false` before going live.**
+calling Hubtel — the checkout "redirect" sends you straight back to the return page and
+the whole register → confirm → email flow runs end-to-end so you can test the page.
+**Set it back to `false` before going live.**
 
 ## Deploying
 
 Any Node host works (Render, Railway, a VPS, etc.). Set the same env vars there,
-run `npm start`, and point your domain at it. For Paystack live payments, use your
-`pk_live_…` / `sk_live_…` keys and add the deployed URL to your Paystack dashboard.
+run `npm start`, and point your domain at it. Set `PUBLIC_BASE_URL` to the deployed
+HTTPS URL so Hubtel's callback and return redirects reach it, and use your live Hubtel
+credentials + merchant account number.
 
 > Note: the flier art says "Sat 4th July 2026"; this build uses a **4-day run, July 17–20, 2026
 > (Fri–Mon)**, starting next Friday per the campaign brief. Change it any time in `.env` (`WEBINAR_DATE_*`).

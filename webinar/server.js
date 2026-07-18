@@ -5,16 +5,48 @@ import { randomBytes } from "node:crypto";
 
 import { config, publicConfig } from "./src/config.js";
 import * as store from "./src/store.js";
-import { verifyTransaction } from "./src/paystack.js";
+import { initiateCheckout, checkPaymentStatus, hubtelEnabled } from "./src/hubtel.js";
 import { sendThankYou, sendReminder, buildThankYouHtml, buildReminderHtml } from "./src/email.js";
 import { createRegistration, updateRegistration, airtableEnabled } from "./src/airtable.js";
 
 // Send the confirmation email only if the backend owns email delivery. When the
-// Airtable → Zapier → Mailchimp/Resend pipeline handles it, set BACKEND_SENDS_EMAIL=false
+// Airtable → Zapier → Resend pipeline handles it, set BACKEND_SENDS_EMAIL=false
 // so registrants don't receive two emails.
 async function maybeSendEmail(reg) {
   if (!config.backendSendsEmail) return { sent: false, reason: "handled_by_pipeline" };
   return sendThankYou(reg);
+}
+
+// Confirm a payment by checking its status with Hubtel, then (once) mark the seat paid,
+// mirror it into Airtable, and send the confirmation email. Idempotent: safe to call from
+// both the Hubtel callback and the return-page status poll.
+async function confirmPayment(reference) {
+  const reg = await store.findByReference(reference);
+  if (!reg) return { confirmed: false, error: "Registration not found.", notFound: true };
+  if (reg.status === "paid") {
+    return { confirmed: true, alreadyProcessed: true, emailSent: reg.emailSent };
+  }
+
+  const result = await checkPaymentStatus(reference);
+  if (!result.ok) {
+    await store.updateByReference(reference, { lastError: result.error });
+    return { confirmed: false, error: result.error || "Payment not completed." };
+  }
+
+  await store.updateByReference(reference, {
+    status: "paid",
+    paidAt: result.data?.date || new Date().toISOString(),
+    channel: result.data?.channel || null,
+    simulated: !!result.simulated,
+  });
+  const updated = await store.findByReference(reference);
+
+  // Mirror the "Paid" status into Airtable so Zapier can fire its confirmed-buyer flow.
+  if (updated.airtableId) await updateRegistration(updated.airtableId, updated);
+
+  const email = await maybeSendEmail(updated);
+  await store.updateByReference(reference, { emailSent: email.sent, emailError: email.reason || null });
+  return { confirmed: true, emailSent: email.sent };
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -47,7 +79,6 @@ app.post("/api/register", async (req, res) => {
     name,
     email,
     phone,
-    amountMinor: config.amountMinor,
     priceGhs: config.priceGhs,
     currency: config.currency,
     status: config.paymentsEnabled ? "pending" : "registered",
@@ -69,51 +100,43 @@ app.post("/api/register", async (req, res) => {
     return res.json({ reference, paymentsEnabled: false, confirmed: true, emailSent: email.sent });
   }
 
-  return res.json({
-    reference,
-    paymentsEnabled: true,
-    email,
-    amountMinor: config.amountMinor,
-    currency: config.currency,
-    paystackPublicKey: config.paystackPublicKey,
-  });
+  // Paid mode: create a Hubtel checkout and hand the hosted URL back so the browser
+  // can redirect the customer there to pay (Mobile Money or card).
+  const checkout = await initiateCheckout(reg);
+  if (!checkout.ok) {
+    await store.updateByReference(reference, { lastError: checkout.error });
+    return res.status(502).json({ error: checkout.error || "Could not start payment." });
+  }
+  await store.updateByReference(reference, { checkoutId: checkout.checkoutId || null });
+
+  return res.json({ reference, paymentsEnabled: true, checkoutUrl: checkout.checkoutUrl });
 });
 
-// ---- Step 2: verify the Paystack payment, confirm the seat, send the email ----
-app.post("/api/pay/verify", async (req, res) => {
-  const reference = String(req.body?.reference || "").trim();
+// ---- Step 2a: Hubtel's server-to-server callback (the source of truth for "paid") ----
+// Hubtel POSTs here once the customer finishes on the hosted checkout page. This fires
+// even if the customer never makes it back to the return page (e.g. closes the tab).
+app.post("/api/hubtel/callback", async (req, res) => {
+  const d = req.body?.Data || req.body?.data || req.body || {};
+  const reference = d.ClientReference || d.clientReference || req.body?.clientReference;
+  if (reference) {
+    try {
+      await confirmPayment(String(reference).trim());
+    } catch (err) {
+      console.error("[hubtel] callback error:", err);
+    }
+  }
+  // Always ack with 200 so Hubtel doesn't retry endlessly; the return page reconciles too.
+  res.json({ received: true });
+});
+
+// ---- Step 2b: the return page polls this to learn whether the payment went through ----
+app.get("/api/pay/status", async (req, res) => {
+  const reference = String(req.query.reference || "").trim();
   if (!reference) return res.status(400).json({ error: "Missing payment reference." });
 
-  const reg = await store.findByReference(reference);
-  if (!reg) return res.status(404).json({ error: "Registration not found." });
-
-  // Idempotent: if we've already confirmed and emailed, don't charge/send twice.
-  if (reg.status === "paid") {
-    return res.json({ confirmed: true, alreadyProcessed: true, emailSent: reg.emailSent });
-  }
-
-  const result = await verifyTransaction(reference);
-  if (!result.ok) {
-    await store.updateByReference(reference, { lastError: result.error });
-    return res.status(402).json({ error: result.error || "Payment could not be verified." });
-  }
-
-  await store.updateByReference(reference, {
-    status: "paid",
-    paidAt: result.data?.paid_at || new Date().toISOString(),
-    channel: result.data?.channel || null,
-    simulated: !!result.simulated,
-  });
-
-  const updated = await store.findByReference(reference);
-
-  // Update the Airtable record to Paid so Zapier can fire its "payment confirmed" flow.
-  if (updated.airtableId) await updateRegistration(updated.airtableId, updated);
-
-  const email = await maybeSendEmail(updated);
-  await store.updateByReference(reference, { emailSent: email.sent, emailError: email.reason || null });
-
-  return res.json({ confirmed: true, emailSent: email.sent });
+  const result = await confirmPayment(reference);
+  if (result.notFound) return res.status(404).json({ error: result.error });
+  return res.json(result);
 });
 
 // ---- Admin: view / export the leads list (protected by ADMIN_TOKEN) ----
@@ -181,9 +204,9 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
 app.listen(config.port, () => {
   console.log(`\n  Zylo Tech Webinar server running → ${config.publicBaseUrl}`);
   console.log(`  Price: ${config.paymentsEnabled ? config.currency + " " + config.priceGhs : "FREE (lead-gen mode)"}`);
-  console.log(`  Paystack: ${config.paystackSecretKey ? "configured" : "NOT configured"}${config.fakePayments ? " (DEV_FAKE_PAYMENTS on)" : ""}`);
+  console.log(`  Hubtel: ${hubtelEnabled ? "configured" : "NOT configured"}${config.fakePayments ? " (DEV_FAKE_PAYMENTS on)" : ""}`);
   console.log(`  Resend: ${config.resendApiKey ? "configured" : "NOT configured (emails will be logged)"}`);
   console.log(`  Airtable: ${airtableEnabled ? `configured → table "${config.airtable.table}"` : "NOT configured (skipped)"}`);
-  console.log(`  Email delivery: ${config.backendSendsEmail ? "backend (Resend)" : "pipeline (Airtable → Zapier → Mailchimp/Resend)"}`);
+  console.log(`  Email delivery: ${config.backendSendsEmail ? "backend (Resend)" : "pipeline (Airtable → Zapier → Resend)"}`);
   console.log(`  Admin leads: ${config.publicBaseUrl}/admin/registrations?token=YOUR_ADMIN_TOKEN\n`);
 });

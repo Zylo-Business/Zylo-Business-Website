@@ -43,13 +43,8 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 font-heading font-bold text-lg text-ink">
-            <span className="grid place-items-center w-8 h-8 rounded-lg bg-teal text-white text-sm font-bold shadow-glow">
-              Z
-            </span>
-            <span>
-              Zylo<span className="text-teal">Tech</span>
-            </span>
+          <Link to="/" className="flex items-center" aria-label="Zylo Tech Solutions — home">
+            <img src="/zylo-logo.png" alt="Zylo Tech Solutions" className="h-8 w-auto" />
           </Link>
 
           {/* Desktop Nav — centered */}

@@ -27,16 +27,21 @@ export const config = {
     phone: process.env.REGISTER_PHONE || "0245426025",
   },
 
-  // Pricing
+  // Pricing (Hubtel charges in major units — GHS, not pesewas)
   priceGhs,
   currency: process.env.CURRENCY || "GHS",
-  // Paystack charges in the minor unit (pesewas for GHS)
-  amountMinor: Math.round(priceGhs * 100),
   paymentsEnabled: priceGhs > 0,
 
-  // Paystack
-  paystackPublicKey: real(process.env.PAYSTACK_PUBLIC_KEY),
-  paystackSecretKey: real(process.env.PAYSTACK_SECRET_KEY),
+  // Hubtel Online Checkout — server-initiated redirect checkout (Mobile Money + cards).
+  //  apiId  = API ID   (Basic-auth username)
+  //  apiKey = API Key  (Basic-auth password)
+  //  merchantAccount = your Hubtel POS Sales / Merchant Account Number — REQUIRED to
+  //                    initiate a checkout and to check a transaction's status.
+  hubtel: {
+    apiId: real(process.env.HUBTEL_API_ID),
+    apiKey: real(process.env.HUBTEL_API_KEY),
+    merchantAccount: (process.env.HUBTEL_MERCHANT_ACCOUNT || "").trim(),
+  },
 
   // Resend
   resendApiKey: real(process.env.RESEND_API_KEY),
@@ -44,7 +49,7 @@ export const config = {
   replyToEmail: process.env.REPLY_TO_EMAIL || "hello@zylotech.com",
 
   // Airtable — the CRM / source of record that Zapier watches.
-  // Pipeline: Checkout/Registration → Airtable → Zapier → Mailchimp / Resend.
+  // Pipeline: Checkout/Registration → Airtable → Zapier → Resend.
   airtable: {
     apiKey: real(process.env.AIRTABLE_API_KEY), // Personal Access Token (pat...)
     baseId: real(process.env.AIRTABLE_BASE_ID), // app...
@@ -53,7 +58,7 @@ export const config = {
 
   // Who sends the confirmation email?
   //  - true  (default): the backend sends it directly via Resend (works with no Zapier).
-  //  - false: leave email to the Airtable → Zapier → Mailchimp/Resend pipeline so you
+  //  - false: leave email to the Airtable → Zapier → Resend pipeline so you
   //           don't get duplicate emails. Flip this once your Zap is live.
   backendSendsEmail: String(process.env.BACKEND_SENDS_EMAIL ?? "true").toLowerCase() !== "false",
 
@@ -83,6 +88,5 @@ export function publicConfig() {
     priceGhs: config.priceGhs,
     currency: config.currency,
     paymentsEnabled: config.paymentsEnabled,
-    paystackPublicKey: config.paystackPublicKey,
   };
 }

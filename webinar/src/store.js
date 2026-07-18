@@ -83,6 +83,6 @@ export async function stats() {
     pending: all.filter((r) => r.status === "pending").length,
     revenueGhs: all
       .filter((r) => r.status === "paid")
-      .reduce((sum, r) => sum + (r.amountMinor || 0), 0) / 100,
+      .reduce((sum, r) => sum + (Number(r.priceGhs) || 0), 0),
   };
 }

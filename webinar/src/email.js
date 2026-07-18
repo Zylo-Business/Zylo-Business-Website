@@ -34,14 +34,17 @@ function joinButton(url) {
 // Shared branded shell — ivory canvas, brand wordmark, white card, footer.
 // `cardInner` is the HTML that goes inside the white card.
 function emailShell(cardInner) {
+  // Email clients need an absolute image URL (they can't resolve site-relative paths),
+  // so the logo is served from this deployment's public base URL.
+  const logoUrl = `${config.publicBaseUrl}/zylo-logo.png`;
   return `<!doctype html>
 <html>
   <body style="margin:0;padding:0;background:#F0EEE6;font-family:Arial,Helvetica,sans-serif;color:#191915;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F0EEE6;">
       <tr><td align="center" style="padding:32px 16px;">
         <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
-          <tr><td align="center" style="padding-bottom:18px;font-size:12px;letter-spacing:3px;font-weight:bold;color:#CC785C;">
-            ZYLO&nbsp;TECH&nbsp;SOLUTIONS
+          <tr><td align="center" style="padding-bottom:18px;">
+            <img src="${logoUrl}" alt="Zylo Tech Solutions" height="30" style="display:block;height:30px;width:auto;border:0;outline:none;text-decoration:none;" />
           </td></tr>
           <tr><td style="background:#FAF9F5;border:1px solid #DDD8C8;border-radius:16px;padding:34px;">
             ${cardInner}

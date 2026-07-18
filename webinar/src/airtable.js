@@ -1,7 +1,7 @@
 import { config } from "./config.js";
 
 // Pushes registrations into Airtable, which acts as the CRM / source of record.
-// Zapier then watches the table and drives Mailchimp / Resend (list + emails).
+// Zapier then watches the table and drives Resend (transactional emails).
 // If Airtable isn't configured, every call no-ops gracefully so the local flow still works.
 
 const { apiKey, baseId, table } = config.airtable;

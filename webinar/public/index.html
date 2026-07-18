@@ -11,7 +11,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://js.paystack.co/v1/inline.js"></script>
   <style>
     :root {
       --navy-900: #F0EEE6;
@@ -71,6 +70,8 @@
       box-shadow: 0 1px 2px rgba(25,25,21,0.12);
     }
     .brand small { display: block; font-size: 9px; letter-spacing: 3px; color: var(--muted); font-weight: 600; }
+    .brand-logo { height: 32px; width: auto; display: block; }
+    footer .brand-logo { height: 42px; margin: 0 auto; }
     .nav-cta { display: flex; align-items: center; gap: 14px; }
     .phone { color: var(--muted); font-size: 14px; font-weight: 600; }
     @media (max-width: 640px){ .phone { display: none; } }
@@ -202,8 +203,7 @@
   <nav class="top">
     <div class="wrap nav-in">
       <div class="brand">
-        <span class="z">Z</span>
-        <span>ZYLO TECH<small>SOLUTIONS</small></span>
+        <img src="/zylo-logo.png" alt="Zylo Tech Solutions" class="brand-logo" />
       </div>
       <div class="nav-cta">
         <a class="phone" id="navPhone" href="#" target="_blank" rel="noopener nofollow" style="text-decoration:none;">Register</a>
@@ -306,7 +306,7 @@
         <ul class="checklist">
           <li>Instant email confirmation with your join link</li>
           <li>4 live sessions + daily Q&amp;A</li>
-          <li>Secure checkout powered by Paystack</li>
+          <li>Secure checkout powered by Hubtel</li>
           <li>Reminder before the class starts</li>
         </ul>
       </div>
@@ -325,7 +325,7 @@
             <button class="btn btn-gold block" id="submitBtn" type="submit" style="margin-top:8px;">
               <span id="submitLabel">Pay GHS 200 &amp; reserve seat</span>
             </button>
-            <div class="pay-methods">🔒 Secured by Paystack · MoMo &amp; cards</div>
+            <div class="pay-methods">🔒 Secured by Hubtel · MoMo &amp; cards</div>
             <p class="form-note">By registering you agree to receive class details by email. We never share your data.</p>
           </form>
         </div>
@@ -346,7 +346,7 @@
       <div class="sec-head"><div class="eyebrow">FAQ</div><h2>Good to know</h2></div>
       <div class="faq">
         <details><summary>How do I join the class after paying?</summary><p>As soon as your payment is confirmed you'll get an email with the Zoom link. We'll also send a reminder shortly before we go live.</p></details>
-        <details><summary>What payment methods can I use?</summary><p>Mobile Money (MTN MoMo, Telecel Cash, AirtelTigo) and Visa/Mastercard, all through Paystack's secure checkout.</p></details>
+        <details><summary>What payment methods can I use?</summary><p>Mobile Money (MTN MoMo, Telecel Cash, AirtelTigo) and Visa/Mastercard, all through Hubtel's secure checkout.</p></details>
         <details><summary>Do I need trading or investing experience?</summary><p>No. The master class is open to all — we start with the fundamentals and build up to practical technique.</p></details>
         <details><summary>Will there be a recording?</summary><p>Registered attendees will be notified by email if a replay is made available.</p></details>
         <details><summary>Who is running this?</summary><p>Zylo Tech Solutions — a digital-products company registered in Ghana. Questions? WhatsApp us on <a id="faqPhone" href="#" target="_blank" rel="noopener nofollow">our business line</a>.</p></details>
@@ -356,7 +356,7 @@
 
   <footer>
     <div class="wrap">
-      <div class="brand"><span class="z">Z</span><span>ZYLO TECH<small>SOLUTIONS</small></span></div>
+      <div class="brand"><img src="/zylo-logo.png" alt="Zylo Tech Solutions" class="brand-logo" /></div>
       <p>© <span id="year"></span> Zylo Tech Solutions · Registered in Ghana · Register: <a id="footPhone" href="#" target="_blank" rel="noopener nofollow" style="color:inherit;">our line</a></p>
     </div>
   </footer>
@@ -435,11 +435,8 @@
       $('submitLabel').textContent = on ? (label || 'Processing…') : $('submitLabel').textContent;
     }
 
-    async function verify(reference) {
-      const res = await fetch('/api/pay/verify', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reference })
-      });
+    async function checkStatus(reference) {
+      const res = await fetch('/api/pay/status?reference=' + encodeURIComponent(reference));
       return res.json();
     }
 
@@ -466,37 +463,48 @@
       // Free / lead-gen mode
       if (!reg.paymentsEnabled) { showSuccess(reg.reference, reg.emailSent); return; }
 
-      // Paystack checkout
-      if (reg.paystackPublicKey && window.PaystackPop) {
-        setLoading(true, 'Opening payment…');
-        const handler = window.PaystackPop.setup({
-          key: reg.paystackPublicKey,
-          email: reg.email,
-          amount: reg.amountMinor,
-          currency: reg.currency,
-          ref: reg.reference,
-          onClose: () => { setLoading(false); $('err').textContent = 'Payment window closed. Your seat is not yet reserved.'; },
-          callback: (response) => {
-            setLoading(true, 'Confirming…');
-            verify(response.reference).then((v) => {
-              if (v.confirmed) showSuccess(response.reference, v.emailSent);
-              else { $('err').textContent = v.error || 'We could not confirm your payment.'; setLoading(false); }
-            }).catch(() => { $('err').textContent = 'Could not confirm payment — contact us with your reference.'; setLoading(false); });
-          }
-        });
-        handler.openIframe();
+      // Hubtel checkout: redirect the browser to the hosted payment page. On completion
+      // Hubtel sends us back to this page with ?ref=…&pay=return, which we handle on load.
+      if (reg.checkoutUrl) {
+        setLoading(true, 'Opening secure payment…');
+        window.location.href = reg.checkoutUrl;
         return;
       }
 
-      // No public key configured (e.g. local dev with DEV_FAKE_PAYMENTS): try server verify directly.
-      setLoading(true, 'Confirming…');
-      const v = await verify(reg.reference);
-      if (v.confirmed) showSuccess(reg.reference, v.emailSent);
-      else { $('err').textContent = 'Online payment isn\'t set up yet. We\'ve saved your details and will send payment instructions by email.'; setLoading(false); }
+      $('err').textContent = reg.error || "Online payment isn't set up yet. We've saved your details and will send payment instructions by email.";
+      setLoading(false);
     });
+
+    // When Hubtel redirects the customer back here (?ref=…&pay=return|cancel), confirm the
+    // payment status with the backend and show the result.
+    async function handlePaymentReturn() {
+      const params = new URLSearchParams(location.search);
+      const ref = params.get('ref');
+      const pay = params.get('pay');
+      if (!ref || !pay) return;
+      // Clean the query string so a refresh doesn't re-trigger this.
+      history.replaceState(null, '', location.pathname);
+
+      if (pay === 'cancel') {
+        $('err').textContent = 'Payment was cancelled. Your seat is not yet reserved — you can try again.';
+        return;
+      }
+      setLoading(true, 'Confirming your payment…');
+      // The callback may land a moment before the redirect settles — poll a few times.
+      for (let i = 0; i < 6; i++) {
+        try {
+          const v = await checkStatus(ref);
+          if (v.confirmed) { showSuccess(ref, v.emailSent); setLoading(false); return; }
+        } catch {}
+        await new Promise((r) => setTimeout(r, 2000));
+      }
+      setLoading(false);
+      $('err').textContent = "We couldn't confirm your payment yet. If you were charged, contact us with your reference: " + ref;
+    }
 
     $('year').textContent = new Date().getFullYear();
     loadConfig();
+    handlePaymentReturn();
   </script>
 </body>
 </html>

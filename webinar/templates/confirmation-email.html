@@ -3,6 +3,7 @@
   Ready to paste into a Zapier "Resend → Send Email" action (or any email tool).
 
   Replace each {{token}} with the matching Airtable field from your Zap:
+    {{logo_url}}   → absolute URL to the logo, e.g. https://your-domain/zylo-logo.png (static)
     {{first_name}} → first name (Airtable "Name" — use Zapier's Text > Split to get the first word)
     {{title}}      → "Wealth & Opportunity Master Class 2026"  (static, or an Airtable field)
     {{date}}       → "July 24–27, 2026 (Fri–Mon)"              (static, or an Airtable field)
@@ -21,8 +22,8 @@
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F0EEE6;">
       <tr><td align="center" style="padding:32px 16px;">
         <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
-          <tr><td align="center" style="padding-bottom:18px;font-size:12px;letter-spacing:3px;font-weight:bold;color:#CC785C;">
-            ZYLO&nbsp;TECH&nbsp;SOLUTIONS
+          <tr><td align="center" style="padding-bottom:18px;">
+            <img src="{{logo_url}}" alt="Zylo Tech Solutions" height="30" style="display:block;height:30px;width:auto;border:0;outline:none;text-decoration:none;" />
           </td></tr>
           <tr><td style="background:#FAF9F5;border:1px solid #DDD8C8;border-radius:16px;padding:34px;">
             <h1 style="margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:27px;line-height:1.2;color:#191915;">

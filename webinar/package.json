@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Landing page, lead capture, Paystack payments and Resend thank-you emails for the Zylo Tech Wealth & Opportunity Master Class 2026.",
+  "description": "Landing page, lead capture, Hubtel payments and Resend thank-you emails for the Zylo Tech Wealth & Opportunity Master Class 2026.",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",

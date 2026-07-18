@@ -22,7 +22,7 @@ export const organizationSchema = {
   "@id": "https://zylotech.com/#organization",
   name: "Zylo Tech Solutions",
   url: "https://zylotech.com",
-  logo: "https://zylotech.com/logo.png",
+  logo: "https://zylotech.com/zylo-logo.png",
   description:
     "Digital products for pastors, crypto traders, and programmers in Ghana and West Africa.",
   address: {

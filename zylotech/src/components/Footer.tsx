@@ -37,11 +37,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 py-12">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 font-heading font-bold text-lg text-ink mb-3">
-              <span className="grid place-items-center w-8 h-8 rounded-lg bg-teal text-white text-sm font-bold">
-                Z
-              </span>
-              Zylo<span className="text-teal -ml-1">Tech</span>
+            <div className="mb-3">
+              <img src="/zylo-logo.png" alt="Zylo Tech Solutions" className="h-9 w-auto" />
             </div>
             <p className="text-muted text-sm leading-relaxed mb-5 max-w-xs">
               Digital products for Ghana's builders, traders, and ministers.
