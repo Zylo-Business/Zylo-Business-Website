@@ -9,14 +9,6 @@ import { initiateCheckout, checkPaymentStatus, hubtelEnabled } from "./src/hubte
 import { sendThankYou, sendReminder, buildThankYouHtml, buildReminderHtml } from "./src/email.js";
 import { createRegistration, updateRegistration, airtableEnabled } from "./src/airtable.js";
 
-// Send the confirmation email only if the backend owns email delivery. When the
-// Airtable → Zapier → Resend pipeline handles it, set BACKEND_SENDS_EMAIL=false
-// so registrants don't receive two emails.
-async function maybeSendEmail(reg) {
-  if (!config.backendSendsEmail) return { sent: false, reason: "handled_by_pipeline" };
-  return sendThankYou(reg);
-}
-
 // Mark a registration paid exactly once: update the store, mirror to Airtable, send the
 // confirmation email. Idempotent — if it's already paid we return without re-sending.
 // The caller is responsible for having established that the payment succeeded.
@@ -32,10 +24,10 @@ async function finalizePaid(reg, { channel, paidAt, simulated } = {}) {
   });
   const updated = await store.findByReference(reg.reference);
 
-  // Mirror the "Paid" status into Airtable so Zapier can fire its confirmed-buyer flow.
+  // Mirror the "Paid" status into Airtable (the CRM / source of record).
   if (updated.airtableId) await updateRegistration(updated.airtableId, updated);
 
-  const email = await maybeSendEmail(updated);
+  const email = await sendThankYou(updated);
   await store.updateByReference(reg.reference, { emailSent: email.sent, emailError: email.reason || null });
   return { confirmed: true, emailSent: email.sent };
 }
@@ -80,7 +72,7 @@ app.post("/api/register", async (req, res) => {
   };
   await store.addRegistration(reg);
 
-  // Push the lead into Airtable (the CRM that Zapier watches). This is a non-critical
+  // Push the lead into Airtable (the CRM / source of record). This is a non-critical
   // side channel, so fire it off WITHOUT awaiting: a slow, blocked, or misconfigured
   // Airtable must never delay — let alone hang — the payment redirect. We store the
   // returned record id when it resolves so the later "Paid" mirror can find the row.
@@ -90,7 +82,7 @@ app.post("/api/register", async (req, res) => {
 
   // Free / lead-gen mode: no payment, confirm immediately and send the email.
   if (!config.paymentsEnabled) {
-    const email = await maybeSendEmail(reg);
+    const email = await sendThankYou(reg);
     await store.updateByReference(reference, { emailSent: email.sent });
     return res.json({ reference, paymentsEnabled: false, confirmed: true, emailSent: email.sent });
   }
@@ -234,6 +226,6 @@ app.listen(config.port, () => {
   console.log(`  Hubtel: ${hubtelEnabled ? "configured" : "NOT configured"}${config.fakePayments ? " (DEV_FAKE_PAYMENTS on)" : ""}`);
   console.log(`  Resend: ${config.resendApiKey ? "configured" : "NOT configured (emails will be logged)"}`);
   console.log(`  Airtable: ${airtableEnabled ? `configured → table "${config.airtable.table}"` : "NOT configured (skipped)"}`);
-  console.log(`  Email delivery: ${config.backendSendsEmail ? "backend (Resend)" : "pipeline (Airtable → Zapier → Resend)"}`);
+  console.log(`  Email delivery: backend (Resend)`);
   console.log(`  Admin leads: ${config.publicBaseUrl}/admin/registrations?token=YOUR_ADMIN_TOKEN\n`);
 });

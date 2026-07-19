@@ -60,20 +60,18 @@ Every registration is stored in `data/registrations.json`. View or export them:
 - **JSON:** `http://localhost:4000/admin/registrations?token=YOUR_ADMIN_TOKEN`
 - **CSV (for Excel/Sheets):** `http://localhost:4000/admin/registrations.csv?token=YOUR_ADMIN_TOKEN`
 
-## Data & automation pipeline
+## Data & email
 
 ```
-Checkout / Registration  →  Airtable  →  Zapier  →  Resend
-   (this backend)          (CRM /        (no-code     (emails)
-                            source of     automation)
-                            record)
+Checkout / Registration  →  Airtable      +  Resend
+   (this backend)          (CRM / source     (confirmation
+                            of record)         emails)
 ```
 
-The backend writes every registration to **Airtable**; **Zapier** watches that table and
-drives **Resend** (emails). The local `data/registrations.json` is kept as a backup.
-
-> By default the backend already sends the confirmation email directly via Resend, so
-> the Zapier step is optional — use it if you want a no-code layer for reminders/nurture.
+The backend writes every registration to **Airtable** (the CRM / source of record) and
+sends the confirmation email directly via **Resend**. The local `data/registrations.json`
+is kept as a backup. Airtable is optional — if it isn't configured, the backend just
+skips it and keeps working with the local store + Resend email.
 
 ### 1. Airtable — create the table
 
@@ -98,45 +96,27 @@ Create a Personal Access Token at <https://airtable.com/create/tokens> with scop
 `AIRTABLE_BASE_ID` (starts `app…`), and `AIRTABLE_TABLE_NAME` in `.env`.
 
 The backend **creates** a row on registration and **updates** it to `Status = Paid`
-(with `Paid At` / `Channel`) after payment is verified — so you can trigger different
-Zaps for new leads vs. confirmed buyers.
+(with `Paid At` / `Channel`) after payment is verified — so the table always reflects
+who has registered vs. who has paid.
 
-### 2. Zapier — from Airtable to Resend
+### 2. Confirmation email
 
-Optional (the backend already sends the confirmation email itself). Use Zapier if you
-want a no-code layer for the emails or a nurture sequence:
+The backend sends the confirmation email itself via **Resend** the moment a registration
+is confirmed (immediately in free mode, or after payment is verified in paid mode). No
+extra setup beyond `RESEND_API_KEY` and a verified `FROM_EMAIL` domain.
 
-**Resend (transactional confirmation email)**
-1. **Trigger:** Airtable → *New or Updated Record*, **Filter** `Status = Paid`.
-2. **Action:** Resend → *Send Email* (or Webhooks → POST to the Resend API), mapping
-   `Email`, `Name`, and `Reference` into your template (see `templates/`).
+### 3. Reminder email ("24 hours to go")
 
-### 3. Avoid duplicate emails
+On-brand HTML templates live in `templates/` (ivory/clay, matching the site) and are the
+same emails the backend generates in `src/email.js`:
 
-If you set up the Zap above to send the confirmation email, set
-**`BACKEND_SENDS_EMAIL=false`** in `.env` so the backend stops sending its own Resend
-email. Leave it `true` (the default) if the backend should keep sending directly.
+| File | Email |
+|---|---|
+| `templates/confirmation-email.html` | Confirmation, on registration/payment |
+| `templates/reminder-email.html` | Reminder, ~24 h before the class |
 
-### 4. Reminder email ("24 hours to go")
-
-On-brand HTML templates live in `templates/` (ivory/clay, matching the site):
-
-| File | Email | For |
-|---|---|---|
-| `templates/confirmation-email.html` | Confirmation, on registration/payment | Resend / Zapier (`{{tokens}}`) |
-| `templates/reminder-email.html` | Reminder, ~24 h before the class | Resend / Zapier (`{{tokens}}`) |
-
-These are the same emails the backend generates in `src/email.js`. The `{{token}}` copies
-in `templates/` are for pasting into a Zapier *Resend → Send Email* action if you prefer to
-drive the emails from Zapier instead of the backend.
-
-**Option A — scheduled Zap (recommended):** *Schedule by Zapier* (the day before) →
-Airtable *Find Records* where `Status = Paid` → Resend *Send Email* using
-`reminder-email.html`. Subject: `Starts tomorrow — Wealth & Opportunity Master Class 2026`.
-
-**Option B — backend trigger:** if you're not using Zapier for this, POST to
-`/admin/send-reminders` (admin-token protected) the day before and the backend emails
-every confirmed registrant via Resend:
+To send the reminder, POST to `/admin/send-reminders` (admin-token protected) the day
+before and the backend emails every confirmed registrant via Resend:
 
 ```bash
 curl -X POST "http://localhost:4000/admin/send-reminders?token=YOUR_ADMIN_TOKEN"
@@ -145,9 +125,6 @@ curl -X POST "http://localhost:4000/admin/send-reminders?token=YOUR_ADMIN_TOKEN"
 
 Point a cron job / uptime pinger at that URL to automate it. It isn't idempotent, so
 trigger it once.
-
-> Airtable is optional: if `AIRTABLE_API_KEY`/`AIRTABLE_BASE_ID` are unset, the backend
-> just skips it and keeps working with the local store + direct Resend email.
 
 ## Testing without live keys
 

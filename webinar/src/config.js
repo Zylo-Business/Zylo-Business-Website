@@ -48,19 +48,12 @@ export const config = {
   fromEmail: process.env.FROM_EMAIL || "Zylo Tech Solutions <onboarding@resend.dev>",
   replyToEmail: process.env.REPLY_TO_EMAIL || "hello@zylotech.com",
 
-  // Airtable — the CRM / source of record that Zapier watches.
-  // Pipeline: Checkout/Registration → Airtable → Zapier → Resend.
+  // Airtable — the CRM / source of record. Every registration is mirrored here.
   airtable: {
     apiKey: real(process.env.AIRTABLE_API_KEY), // Personal Access Token (pat...)
     baseId: real(process.env.AIRTABLE_BASE_ID), // app...
     table: process.env.AIRTABLE_TABLE_NAME || "Registrations",
   },
-
-  // Who sends the confirmation email?
-  //  - true  (default): the backend sends it directly via Resend (works with no Zapier).
-  //  - false: leave email to the Airtable → Zapier → Resend pipeline so you
-  //           don't get duplicate emails. Flip this once your Zap is live.
-  backendSendsEmail: String(process.env.BACKEND_SENDS_EMAIL ?? "true").toLowerCase() !== "false",
 
   // Admin
   adminToken: process.env.ADMIN_TOKEN || "",

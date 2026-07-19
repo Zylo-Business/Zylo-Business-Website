@@ -1,10 +1,11 @@
 <!--
   Zylo Tech — Master Class REMINDER email ("24 hours to go", ivory/clay brand)
-  Ready to paste into a Zapier "Resend → Send Email" action.
+  Reference copy of the reminder email the backend sends (see src/email.js).
+  Paste into any email tool if you want to send it manually.
 
-  Replace each {{token}} with the matching value in your Zap:
+  Replace each {{token}} with the matching value:
     {{logo_url}}   → absolute URL to the logo, e.g. https://your-domain/zylo-logo.png (static)
-    {{first_name}} → first name (Airtable "Name" → Zapier Text > Split, first word)
+    {{first_name}} → first name (the registrant's first name)
     {{title}}      → "Wealth & Opportunity Master Class 2026"  (static)
     {{date}}       → "July 24–27, 2026 (Fri–Mon)"              (static)
     {{time}}       → "7:00 PM GMT daily"                        (static)
@@ -12,9 +13,8 @@
     {{zoom_link}}  → your Zoom join URL                         (static)
     {{phone}}      → your business number                       (static)
 
-  Suggested Zap (scheduled): Trigger = Schedule by Zapier (e.g. the day before, 9am)
-    → Action = Airtable "Find/Search Records" where Status = Paid (loop)
-    → Action = Resend "Send Email" with this HTML.
+  To send the reminder to all confirmed registrants, POST to /admin/send-reminders
+  (see README) — the backend renders this and emails everyone via Resend.
   Subject line suggestion:  Starts tomorrow — Wealth & Opportunity Master Class 2026
 -->
 <!doctype html>
