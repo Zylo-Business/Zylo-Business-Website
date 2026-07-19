@@ -60,6 +60,35 @@ export async function createRegistration(reg) {
   }
 }
 
+// Look a registration up by its Reference. Used on serverless hosts where the local
+// store is empty in the callback / status-check request (a different instance handled
+// the original /api/register). Returns a normalized reg (or null) so the payment flow
+// can be finalized from Airtable — the durable source of record.
+export async function findByReference(reference) {
+  if (!airtableEnabled) return null;
+  try {
+    const safe = String(reference).replace(/'/g, "\\'");
+    const formula = encodeURIComponent(`{Reference}='${safe}'`);
+    const data = await request("GET", `${apiUrl()}?maxRecords=1&filterByFormula=${formula}`);
+    const rec = data?.records?.[0];
+    if (!rec) return null;
+    const f = rec.fields || {};
+    return {
+      airtableId: rec.id,
+      reference: f.Reference || reference,
+      name: f.Name || "",
+      email: f.Email || "",
+      phone: f.Phone || "",
+      priceGhs: Number(f["Price (GHS)"]) || 0,
+      status: String(f.Status || "").toLowerCase() === "paid" ? "paid" : "pending",
+      emailSent: false,
+    };
+  } catch (err) {
+    console.error("[airtable] findByReference failed:", err.message);
+    return null;
+  }
+}
+
 // Update an existing record (e.g. mark Paid after payment verification).
 export async function updateRegistration(recordId, reg) {
   if (!airtableEnabled || !recordId) return { ok: false, skipped: true };
