@@ -80,9 +80,13 @@ app.post("/api/register", async (req, res) => {
   };
   await store.addRegistration(reg);
 
-  // Push the lead into Airtable (the CRM that Zapier watches). Non-fatal on failure.
-  const at = await createRegistration(reg);
-  if (at.id) await store.updateByReference(reference, { airtableId: at.id });
+  // Push the lead into Airtable (the CRM that Zapier watches). This is a non-critical
+  // side channel, so fire it off WITHOUT awaiting: a slow, blocked, or misconfigured
+  // Airtable must never delay — let alone hang — the payment redirect. We store the
+  // returned record id when it resolves so the later "Paid" mirror can find the row.
+  createRegistration(reg)
+    .then((at) => (at?.id ? store.updateByReference(reference, { airtableId: at.id }) : null))
+    .catch((err) => console.error("[airtable] background create failed:", err));
 
   // Free / lead-gen mode: no payment, confirm immediately and send the email.
   if (!config.paymentsEnabled) {

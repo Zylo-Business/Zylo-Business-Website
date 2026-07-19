@@ -14,6 +14,10 @@ import { config } from "./config.js";
 const CHECKOUT_URL = "https://payproxyapi.hubtel.com/items/initiate";
 const STATUS_BASE = "https://api-txnstatus.hubtel.com/transactions";
 
+// Never let a slow/unreachable Hubtel hang an incoming request. If the call doesn't
+// complete in time it aborts and we surface a clear error instead of stalling forever.
+const HUBTEL_TIMEOUT_MS = 15000;
+
 export const hubtelEnabled = Boolean(
   config.hubtel.apiId && config.hubtel.apiKey && config.hubtel.merchantAccount
 );
@@ -62,6 +66,7 @@ export async function initiateCheckout(reg) {
         Accept: "application/json",
       },
       body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(HUBTEL_TIMEOUT_MS),
     });
     const body = await res.json().catch(() => ({}));
     const checkoutUrl = body?.data?.checkoutUrl || body?.data?.checkoutDirectUrl;
@@ -106,6 +111,7 @@ export async function checkPaymentStatus(reference) {
     const url = `${STATUS_BASE}/${encodeURIComponent(config.hubtel.merchantAccount)}/status?clientReference=${encodeURIComponent(reference)}`;
     const res = await fetch(url, {
       headers: { Authorization: authHeader(), Accept: "application/json" },
+      signal: AbortSignal.timeout(HUBTEL_TIMEOUT_MS),
     });
     const body = await res.json().catch(() => ({}));
     const data = body?.data;

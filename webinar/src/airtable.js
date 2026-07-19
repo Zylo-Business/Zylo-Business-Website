@@ -27,6 +27,10 @@ function toFields(reg) {
   };
 }
 
+// Airtable is a non-critical side channel; never let it hang a request. Bound every
+// call so a slow/blocked host (or a wrong token) fails fast instead of stalling forever.
+const AIRTABLE_TIMEOUT_MS = 8000;
+
 async function request(method, url, body) {
   const res = await fetch(url, {
     method,
@@ -35,6 +39,7 @@ async function request(method, url, body) {
       "Content-Type": "application/json",
     },
     body: body ? JSON.stringify(body) : undefined,
+    signal: AbortSignal.timeout(AIRTABLE_TIMEOUT_MS),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
