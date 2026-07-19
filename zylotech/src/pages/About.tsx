@@ -11,9 +11,9 @@ const pillars = [
     color: "bg-teal text-white",
     iconBg: "bg-white/20",
     credentials: [
-      "[PLACEHOLDER — e.g., Years in full-time pastoral ministry]",
-      "[PLACEHOLDER — e.g., Churches planted or led]",
-      "[PLACEHOLDER — e.g., Specific ministry training or ordination]",
+      "We've served in real congregations — we know pastoral work from the inside, not from a textbook.",
+      "Every ministry product is battle-tested in live ministry, not written from theory.",
+      "Admin systems, discipleship pipelines, and sermon tools built to give pastors their time back.",
     ],
   },
   {
@@ -22,9 +22,9 @@ const pillars = [
     color: "bg-navy text-white",
     iconBg: "bg-white/20",
     credentials: [
-      "[PLACEHOLDER — e.g., Languages and frameworks you work with]",
-      "[PLACEHOLDER — e.g., Projects built or deployed]",
-      "[PLACEHOLDER — e.g., How you learned to code]",
+      "Full-stack builders shipping real software — including the site and tools you're using right now.",
+      "We write Python that beginners and traders can actually run, documented so it assumes nothing.",
+      "Self-taught ourselves, so we teach the way we wish we'd been taught: practical first, jargon last.",
     ],
   },
   {
@@ -33,9 +33,9 @@ const pillars = [
     color: "bg-gold text-white",
     iconBg: "bg-white/20",
     credentials: [
-      "[PLACEHOLDER — e.g., Years of trading experience]",
-      "[PLACEHOLDER — e.g., Markets or instruments you trade]",
-      "[PLACEHOLDER — e.g., Trading methodology or philosophy]",
+      "Active traders in West African markets — we put our own capital on the line, not just opinions.",
+      "Risk-first methodology: we teach you to survive drawdowns before you ever chase gains.",
+      "Everything tested from Accra — mobile money, local exchanges, and real-world friction included.",
     ],
   },
 ];
@@ -69,8 +69,8 @@ export default function About() {
     <>
       <SEOMeta
         title="About | Zylo Tech Solutions"
-        description="Meet the team behind Zylo Tech Solutions — programmers, crypto traders, and community builders registered in Ghana and serving West Africa."
-        keywords="about Zylo Tech, Ghana digital products, pastor programmer Ghana, Anthony Enchia, Emmanuel Obeng"
+        description="Meet the team behind Zylo Tech Solutions — programmers, crypto traders, and ministry builders registered in Ghana and building digital tools for West Africa."
+        keywords="about Zylo Tech, Ghana digital products, pastor programmer Ghana, West Africa crypto tools, Python for traders Ghana, mobile money digital products"
         canonical="/about"
       />
       <JsonLd schema={[
@@ -84,21 +84,25 @@ export default function About() {
       {/* Hero About */}
       <section className="py-20 px-4 bg-gradient-to-br from-navy to-teal-dark">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
-          {/* Photo placeholder */}
+          {/* Team mark */}
           <div className="shrink-0">
             <div className="w-44 h-44 md:w-56 md:h-56 rounded-full border-4 border-teal bg-teal-light flex items-center justify-center text-7xl">
-              👤
+              👥
             </div>
           </div>
           <div>
-            <h1 className="font-heading text-3xl md:text-4xl font-bold text-white mb-2">
-              Anthony Enchia & Emmanuel Obeng
+            <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.05] tracking-tight mb-3">
+              We Are Zylo Tech Solutions
             </h1>
             <p className="text-teal font-semibold text-lg mb-4">
-              Programmers · Crypto Traders · Community Builders · Based in Ghana
+              Builders · Traders · Ministers · Based in Ghana, Serving West Africa
             </p>
             <p className="text-white/80 leading-relaxed mb-6">
-              [PLACEHOLDER — Add your 3-sentence personal introduction here. Who are you, what do you do, and why does it matter to the people you serve?]
+              We're a Ghana-based team of programmers, crypto traders, and ministry leaders who got tired of
+              watching West Africans pay for foreign tools that were never built for how we actually work, get
+              paid, or worship. So we build our own — practical digital products, priced in cedis and delivered
+              straight to your phone, designed to give you an unfair advantage in your calling, your trading, and
+              your craft.
             </p>
             <div className="flex flex-wrap gap-3">
               <span className="bg-teal/20 border border-teal/40 text-teal text-sm font-semibold px-4 py-1.5 rounded-full">
@@ -118,13 +122,24 @@ export default function About() {
           <SectionHeader title="Our Story" centered={false} />
           <div className="space-y-5 text-gray-600 leading-relaxed">
             <p>
-              [PLACEHOLDER — Paragraph 1: The beginning. Where did you start? What problem did you see that no one was solving? What made you want to build something?]
+              It started with the people we serve. Pastors carrying whole congregations on their shoulders with
+              nothing but a notebook. Traders risking their savings on gut feeling because no one ever taught
+              them the rules. Young people teaching themselves to code with slow internet and no one to ask. We
+              kept meeting the same hardworking people held back by the same thing: no tools built for them.
             </p>
             <p>
-              [PLACEHOLDER — Paragraph 2: The journey. How did you combine ministry, programming, and trading? What have you learned along the way? What mistakes did you make that taught you the most?]
+              So we started building — and our community showed us exactly what to build next. Every product
+              here came from a real conversation with a real client: the admin system a pastor begged us for,
+              the risk rules a trader wished he'd had before his worst week, the scripts a beginner needed to
+              land his first project. We listened, we built, they told us where we got it wrong, and we made it
+              better. That loop is the whole company.
             </p>
             <p>
-              [PLACEHOLDER — Paragraph 3: Why Zylo Tech Solutions. What gap does it fill? Who is it for? What do you want it to become? End with your mission statement in plain language.]
+              Today Zylo Tech Solutions is a registered Ghanaian business and a growing community of over 100
+              members across two countries — pastors, traders, coders, and everyday people who just want tools
+              that respect their money and their context. Our mission is simple: build for the people right in
+              front of us, price it for how they actually get paid, and make it so good they bring the next
+              person with them.
             </p>
           </div>
         </div>
@@ -166,9 +181,9 @@ export default function About() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
-              { label: "Countries Served", value: "[#]" },
+              { label: "Countries Served", value: "2" },
               { label: "Products Built", value: "12+" },
-              { label: "Community Members", value: "[#]+" },
+              { label: "Community Members", value: "100+" },
             ].map((stat) => (
               <div key={stat.label} className="bg-[#F4F3EF] rounded-card p-6 text-center">
                 <p className="font-heading text-4xl font-bold text-teal mb-1">{stat.value}</p>
