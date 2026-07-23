@@ -109,13 +109,13 @@ export function articleSchema(post: {
 }) {
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     headline: post.title,
     description: post.excerpt,
     datePublished: post.date,
     dateModified: post.date,
     url: `https://zylotechhub.com/blog/${post.slug}`,
-    image: `https://zylotechhub.com/og-image.png`,
+    image: `https://zylotechhub.com/zylo-logo.png`,
     author: { "@id": "https://zylotechhub.com/#organization" },
     publisher: { "@id": "https://zylotechhub.com/#organization" },
     articleSection: post.category,

@@ -28,7 +28,7 @@ export default function Blog() {
   return (
     <>
       <SEOMeta
-        title="Blog | Zylo Tech Solutions"
+        title="Technology Blog | Zylo Tech Solutions"
         description="Free articles on crypto trading in Ghana, ministry leadership, Python programming, and lottery analysis — written by practitioners based in Accra."
         keywords="Ghana crypto blog, pastor resources Africa, python tutorial Ghana, lottery analysis Africa, West Africa trading tips"
         canonical="/blog"

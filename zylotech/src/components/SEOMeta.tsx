@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 
 const SITE_NAME = "Zylo Tech Solutions";
 const SITE_URL = "https://zylotechhub.com";
-const DEFAULT_OG_IMAGE = "/og-image.png";
+const DEFAULT_OG_IMAGE = "/zylo-logo.png";
 
 interface SEOMetaProps {
   title?: string;
@@ -23,7 +23,7 @@ export default function SEOMeta({
   type = "website",
   noIndex = false,
 }: SEOMetaProps) {
-  const fullTitle = title === SITE_NAME ? title : `${title} | ${SITE_NAME}`;
+  const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
   const canonicalUrl = canonical
     ? `${SITE_URL}${canonical}`
     : typeof window !== "undefined"

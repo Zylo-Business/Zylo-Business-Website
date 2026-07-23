@@ -58,8 +58,8 @@ const workWithMe = [
   {
     title: "Book a 1-on-1 Session",
     description: "Work directly with us via a private coaching call on Calendly.",
-    link: "#",
-    internal: false,
+    link: "/contact",
+    internal: true,
     cta: "Book a Session",
   },
 ];
@@ -68,7 +68,7 @@ export default function About() {
   return (
     <>
       <SEOMeta
-        title="About | Zylo Tech Solutions"
+        title="About Zylo Tech Solutions"
         description="Meet the team behind Zylo Tech Solutions — programmers, crypto traders, and ministry builders registered in Ghana and building digital tools for West Africa."
         keywords="about Zylo Tech, Ghana digital products, pastor programmer Ghana, West Africa crypto tools, Python for traders Ghana, mobile money digital products"
         canonical="/about"

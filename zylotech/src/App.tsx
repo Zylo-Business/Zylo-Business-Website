@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Link } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { MessageCircle } from "lucide-react";
+import SEOMeta from "./components/SEOMeta";
 
 import { whatsappUrl } from "./lib/contact";
 import Navbar from "./components/Navbar";
@@ -24,7 +25,9 @@ function ScrollToTop() {
 
 function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
+    <>
+      <SEOMeta title="Page Not Found | Zylo Tech Solutions" noIndex />
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
       <h1 className="font-heading text-6xl font-bold text-teal mb-4">404</h1>
       <p className="text-xl text-navy font-semibold mb-2">Page Not Found</p>
       <p className="text-gray-500 mb-8">The page you are looking for does not exist.</p>
@@ -34,7 +37,8 @@ function NotFound() {
       >
         Go Back Home
       </Link>
-    </div>
+      </div>
+    </>
   );
 }
 

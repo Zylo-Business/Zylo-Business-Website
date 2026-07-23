@@ -77,7 +77,7 @@ export default function Products() {
   return (
     <>
       <SEOMeta
-        title="Products | Zylo Tech Solutions"
+        title="Digital Products for Ghana"
         description="Browse all digital products for pastors, crypto traders, programmers, and lottery enthusiasts in Ghana and West Africa. Priced in GHS, instant download."
         keywords="digital products Ghana, crypto course Ghana, pastor tools Africa, python scripts Ghana, lottery analysis spreadsheet"
         canonical="/products"

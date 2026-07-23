@@ -62,7 +62,7 @@ export default function Contact() {
   return (
     <>
       <SEOMeta
-        title="Contact | Zylo Tech Solutions"
+        title="Contact Zylo Tech Solutions"
         description="Get in touch with Zylo Tech Solutions. Ask about products, book a 1-on-1 coaching session, or join the free community. Based in Accra, Ghana."
         keywords="contact Zylo Tech Ghana, coaching session Ghana, book session West Africa, digital products support"
         canonical="/contact"
@@ -146,9 +146,9 @@ export default function Contact() {
             </ul>
 
             <a
-              href="#"
+              href={whatsappUrl()}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               className="inline-flex items-center gap-2 bg-teal text-white font-semibold px-6 py-3 rounded-full hover:bg-teal-dark transition-colors mb-8"
             >
               Book a 1-on-1 Session <ExternalLink size={15} />
@@ -179,8 +179,9 @@ export default function Contact() {
 
             <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Name</label>
+                <label htmlFor="from_name" className="block text-sm font-semibold text-gray-700 mb-1.5">Name</label>
                 <input
+                  id="from_name"
                   type="text"
                   {...register("from_name", { required: "Name is required", minLength: { value: 2, message: "Name must be at least 2 characters" } })}
                   className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-teal transition-colors ${errors.from_name ? "border-red-400 bg-red-50" : "border-gray-200"}`}
@@ -190,8 +191,9 @@ export default function Contact() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+                <label htmlFor="reply_to" className="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
                 <input
+                  id="reply_to"
                   type="email"
                   {...register("from_email", {
                     required: "Email is required",
@@ -220,8 +222,9 @@ export default function Contact() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Message</label>
+                <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-1.5">Message</label>
                 <textarea
+                  id="message"
                   rows={4}
                   {...register("message", {
                     required: "Message is required",

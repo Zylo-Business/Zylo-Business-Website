@@ -139,7 +139,7 @@ export default function LotteryTracker() {
   return (
     <>
       <SEOMeta
-        title="Lottery Spending Tracker | Zylo Tech Solutions"
+        title="Lottery Tracker Ghana"
         description="Free tool to log every NLA play and see your real net — the totals that matter, not the wins you remember. Built for Ghanaian players."
         keywords="lottery tracker, NLA spending tracker, Ghana lottery, lottery budget tool"
         canonical="/lottery-tracker"
