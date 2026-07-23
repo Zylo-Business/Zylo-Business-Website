@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
 const SITE_NAME = "Zylo Tech Solutions";
-const SITE_URL = "https://zylotech.com";
+const SITE_URL = "https://zylotechhub.com";
 const DEFAULT_OG_IMAGE = "/og-image.png";
 
 interface SEOMetaProps {

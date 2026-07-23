@@ -76,8 +76,8 @@ export default function About() {
       <JsonLd schema={[
         organizationSchema,
         breadcrumbSchema([
-          { name: "Home", url: "https://zylotech.com/" },
-          { name: "About", url: "https://zylotech.com/about" },
+          { name: "Home", url: "https://zylotechhub.com/" },
+          { name: "About", url: "https://zylotechhub.com/about" },
         ]),
       ]} />
 

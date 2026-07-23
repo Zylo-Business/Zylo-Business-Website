@@ -84,8 +84,8 @@ export default function Products() {
       />
       <JsonLd schema={[
         breadcrumbSchema([
-          { name: "Home", url: "https://zylotech.com/" },
-          { name: "Products", url: "https://zylotech.com/products" },
+          { name: "Home", url: "https://zylotechhub.com/" },
+          { name: "Products", url: "https://zylotechhub.com/products" },
         ]),
         ...products.map(p => productSchema(p)),
         faqSchema(faqs.map(f => ({ q: f.q, a: f.a }))),

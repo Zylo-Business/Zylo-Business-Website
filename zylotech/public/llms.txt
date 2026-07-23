@@ -13,7 +13,7 @@
 - **Location:** Accra, Ghana
 - **Founded:** 2024
 - **Registration:** Ghana registered business
-- **Website:** https://zylotech.com
+- **Website:** https://zylotechhub.com
 - **Contact:** hello@zylotech.com
 
 ## Team
@@ -52,11 +52,11 @@
 
 ## Pages
 
-- [Home](https://zylotech.com/) — Hero, product highlights, testimonials, CTA
-- [Products](https://zylotech.com/products) — Full product catalogue with buy buttons
-- [About](https://zylotech.com/about) — Team story and expertise pillars
-- [Blog](https://zylotech.com/blog) — Free educational articles
-- [Contact](https://zylotech.com/contact) — Form, WhatsApp, Calendly booking
+- [Home](https://zylotechhub.com/) — Hero, product highlights, testimonials, CTA
+- [Products](https://zylotechhub.com/products) — Full product catalogue with buy buttons
+- [About](https://zylotechhub.com/about) — Team story and expertise pillars
+- [Blog](https://zylotechhub.com/blog) — Free educational articles
+- [Contact](https://zylotechhub.com/contact) — Form, WhatsApp, Calendly booking
 
 ## Audience
 

@@ -19,10 +19,10 @@ export default function JsonLd({ schema }: JsonLdProps) {
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "@id": "https://zylotech.com/#organization",
+  "@id": "https://zylotechhub.com/#organization",
   name: "Zylo Tech Solutions",
-  url: "https://zylotech.com",
-  logo: "https://zylotech.com/zylo-logo.png",
+  url: "https://zylotechhub.com",
+  logo: "https://zylotechhub.com/zylo-logo.png",
   description:
     "Digital products for pastors, crypto traders, and programmers in Ghana and West Africa.",
   address: {
@@ -46,13 +46,13 @@ export const organizationSchema = {
       "@type": "Person",
       name: "Anthony Enchia",
       jobTitle: "Computer Programmer & Crypto Trader",
-      worksFor: { "@id": "https://zylotech.com/#organization" },
+      worksFor: { "@id": "https://zylotechhub.com/#organization" },
     },
     {
       "@type": "Person",
       name: "Emmanuel Obeng",
       jobTitle: "Social Media Manager & Crypto Trader",
-      worksFor: { "@id": "https://zylotech.com/#organization" },
+      worksFor: { "@id": "https://zylotechhub.com/#organization" },
     },
   ],
 };
@@ -60,15 +60,15 @@ export const organizationSchema = {
 export const webSiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "@id": "https://zylotech.com/#website",
-  url: "https://zylotech.com",
+  "@id": "https://zylotechhub.com/#website",
+  url: "https://zylotechhub.com",
   name: "Zylo Tech Solutions",
-  publisher: { "@id": "https://zylotech.com/#organization" },
+  publisher: { "@id": "https://zylotechhub.com/#organization" },
   potentialAction: {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
-      urlTemplate: "https://zylotech.com/blog?search={search_term_string}",
+      urlTemplate: "https://zylotechhub.com/blog?search={search_term_string}",
     },
     "query-input": "required name=search_term_string",
   },
@@ -95,7 +95,7 @@ export function productSchema(p: {
       price: ghsAmount,
       availability: "https://schema.org/InStock",
       url: p.selarLink,
-      seller: { "@id": "https://zylotech.com/#organization" },
+      seller: { "@id": "https://zylotechhub.com/#organization" },
     },
   };
 }
@@ -114,10 +114,10 @@ export function articleSchema(post: {
     description: post.excerpt,
     datePublished: post.date,
     dateModified: post.date,
-    url: `https://zylotech.com/blog/${post.slug}`,
-    image: `https://zylotech.com/og-image.png`,
-    author: { "@id": "https://zylotech.com/#organization" },
-    publisher: { "@id": "https://zylotech.com/#organization" },
+    url: `https://zylotechhub.com/blog/${post.slug}`,
+    image: `https://zylotechhub.com/og-image.png`,
+    author: { "@id": "https://zylotechhub.com/#organization" },
+    publisher: { "@id": "https://zylotechhub.com/#organization" },
     articleSection: post.category,
     inLanguage: "en-GH",
   };

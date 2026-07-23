@@ -3,7 +3,7 @@ Allow: /
 Disallow: /api/
 
 # Sitemap
-Sitemap: https://zylotech.com/sitemap.xml
+Sitemap: https://zylotechhub.com/sitemap.xml
 
 # AI crawlers — allowed to index content for training and search
 User-agent: GPTBot

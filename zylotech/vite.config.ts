@@ -24,7 +24,7 @@ export default defineConfig({
   plugins: [
     react(),
     Sitemap({
-      hostname: 'https://zylotech.com',
+      hostname: 'https://zylotechhub.com',
       dynamicRoutes: [...publicRoutes, ...blogRoutes],
     }),
   ],

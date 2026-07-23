@@ -69,8 +69,8 @@ export default function Contact() {
       />
       <JsonLd schema={[
         breadcrumbSchema([
-          { name: "Home", url: "https://zylotech.com/" },
-          { name: "Contact", url: "https://zylotech.com/contact" },
+          { name: "Home", url: "https://zylotechhub.com/" },
+          { name: "Contact", url: "https://zylotechhub.com/contact" },
         ]),
         faqSchema(faqs.map(f => ({ q: f.q, a: f.a }))),
       ]} />

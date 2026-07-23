@@ -35,8 +35,8 @@ export default function Blog() {
       />
       <JsonLd schema={[
         breadcrumbSchema([
-          { name: "Home", url: "https://zylotech.com/" },
-          { name: "Blog", url: "https://zylotech.com/blog" },
+          { name: "Home", url: "https://zylotechhub.com/" },
+          { name: "Blog", url: "https://zylotechhub.com/blog" },
         ]),
         ...posts.map(articleSchema),
       ]} />
